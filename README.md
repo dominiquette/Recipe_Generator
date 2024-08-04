@@ -1,2 +1,3 @@
 # CFG-Group-Project-5
-just trying
+## First Code
+04-08 We create the first shared code from Dom's Code
