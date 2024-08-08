@@ -2,13 +2,15 @@
 import requests
 
 # ===== Importing data from files ===========
-from config import appid
-
+from config import api_key
 
 # ===== Establish API connection ===========
-class APIClient:
+# SpoonacularAPI class handles making requests to the API
+class SpoonacularAPI:
     def __init__(self, base_url, api_key):
+        # Creates an instance of the base url
         self.base_url = base_url
+        # Creates an instance of the api key imported from config
         self.api_key = api_key
 
     def get_headers(self):
@@ -24,121 +26,67 @@ class APIClient:
         response.raise_for_status()  # Raise an exception for HTTP errors
         return response.json()
 
+# RecipeFinder class handles getting recipes from the API
+class RecipeFinder:
+    def __init__(self, api):
+        # Creates an instance of the API
+        self.api = api
 
-def fetch_recipes_by_ingredients(ingredients):
-    endpoint = "https://api.spoonacular.com/recipes/findByIngredients"
-    params = {
-        "ingredients": ",".join(ingredients),
-        "number": 10,  # Number of recipes to return
-        "apiKey": appid
-    }
-    try:
-        response = requests.get(endpoint, params=params)
-        response.raise_for_status()
-        return response.json()
-    except requests.RequestException as e:
-        print(f"Error fetching recipes: {e}")
-        return []
-
-
-def fetch_recipes_by_category(category):
-    endpoint = f"https://api.spoonacular.com/recipes/complexSearch"
-    params = {
-        "type": category,
-        "number": 10,  # Number of recipes to return
-        "apiKey": appid
-    }
-    try:
-        response = requests.get(endpoint, params=params)
-        response.raise_for_status()
-        data = response.json()
-        return data.get("results", [])
-    except requests.RequestException as e:
-        print(f"Error fetching recipes: {e}")
-        return []
-
-
-def fetch_recipe_instructions(recipe_id):
-
-    endpoint = f"https://api.spoonacular.com/recipes/{recipe_id}/information"
-    params = {
-        "apiKey": appid
-    }
-    try:
-        response = requests.get(endpoint, params=params)
-        response.raise_for_status()
-        return response.json()
-    except requests.RequestException as e:
-        print(f"Error fetching recipe instructions: {e}")
-        return {}
-
-
-def fetch_random_recipes():
-    endpoint = "https://api.spoonacular.com/recipes/random"
-    params = {
-        "number": 10,  # Number of random recipes to return
-        "apiKey": appid
-    }
-    try:
-        response = requests.get(endpoint, params=params)
-        response.raise_for_status()
-        data = response.json()
-        if "recipes" in data:
-            return data["recipes"]
-        else:
-            print("Unexpected response format:", data)
+    def find_recipes_by_ingredients(self, ingredients):
+        endpoint = "recipes/findByIngredients"
+        params = {
+            "ingredients": ingredients,
+            "number": 10,  # Number of recipes to return
+            "ranking": 2,  # minimizes missing ingredients
+            "apiKey": api_key,
+            "ignorePantry": "true"  # ignore typical pantry items
+        }
+        try:
+            response = self.api.make_request(endpoint, params=params)
+            return response
+        except requests.RequestException as e:
+            print(f"Error fetching recipes: {e}")
             return []
-    except requests.RequestException as e:
-        print(f"Error fetching random recipes: {e}")
-        return []
 
+    def find_recipes_by_category(self, category):
+        endpoint = "recipes/complexSearch"
+        params = {
+            "type": category,
+            "number": 10,
+            "apiKey": api_key
+        }
+        try:
+            response = self.api.make_request(endpoint, params=params)
+            return response.get("results", [])
+        except requests.RequestException as e:
+            print(f"Error fetching recipes: {e}")
+            return []
 
-# ===== Displaying functions ===========
-def display_menu(menu_items, title):
-    # Define the width of the box, including borders
-    width = 44
+    def find_recipe_instructions(self, recipe_id):
+        endpoint = f"recipes/{recipe_id}/information"
+        params = {
+            "apiKey": api_key
+        }
+        try:
+            response = self.api.make_request(endpoint, params=params)
+            return response
+        except requests.RequestException as e:
+            print(f"Error fetching recipe instructions: {e}")
+            return {}
 
-    # Create the top border
-    print("\n\t╔" + "═" * (width - 2) + "╗")
-    print(f"\t║ {title.ljust(width - 4)} ║")
-    print("\t╠" + "═" * (width - 2) + "╣")
-
-    # Print each menu item, padded to fit the box width
-    for item in menu_items:
-        print(f"\t║ {item.ljust(width - 4)} ║")
-
-    # Create the bottom border
-    print("\t╚" + "═" * (width - 2) + "╝")
-
-
-# ===== Displaying options ===========
-main_menu_items = [
-    "[1] Get recipes based on ingredients",
-    "[2] Get random recipes",
-    "[3] View Recipe Categories",
-    "[4] Exit"
-]
-
-category_menu_items = [
-    "[1] Vegan Recipes",
-    "[2] Vegetarian Recipes",
-    "[3] Gluten-Free Recipes",
-    "[4] Fish Recipes",
-    "[5] Meat Recipes",
-    "[6] Desserts",
-    "[7] Healthy Snacks",
-    "[8] Raw Fruit and Veg Recipes",
-    "[9] Back to Main Menu"
-]
-
-category_mapping = {
-    '1': 'vegan',
-    '2': 'vegetarian',
-    '3': 'gluten free',
-    '4': 'fish',
-    '5': 'meat',
-    '6': 'dessert',
-    '7': 'healthy',
-    '8': 'raw'
-}
-
+    def find_random_recipes(self):
+        endpoint = "recipes/random"
+        params = {
+            "number": 10,
+            "apiKey": api_key
+        }
+        try:
+            response = self.api.make_request(endpoint, params=params)
+            if "recipes" in response:
+                return response["recipes"]
+            else:
+                print("Unexpected response format:", response)
+                return []
+        except requests.RequestException as e:
+            print(f"Error fetching random recipes: {e}")
+            return []
