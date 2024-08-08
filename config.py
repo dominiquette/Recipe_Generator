@@ -1,2 +1,2 @@
 # spoonacular API key
-appid = 'your key goes here'
+api_key = 'your api key goes here'
