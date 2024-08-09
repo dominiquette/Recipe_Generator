@@ -111,7 +111,7 @@ def fetch_random_recipes():
     endpoint = "https://api.spoonacular.com/recipes/random"   # API endpoint
     params = {
         "number": 10,  # Number of random recipes to return
-        "apiKey": appid
+        "apiKey": api_key
     }
     try:
         response = requests.get(endpoint, params=params)
