@@ -39,7 +39,7 @@ class RecipeFinder:
             "number": 10,  # Number of recipes to return
             "ranking": 2,  # minimizes missing ingredients
             "apiKey": api_key,
-            "ignorePantry": "true"  # ignore typical pantry items
+            "ignorePantry": True  # ignore typical pantry items
         }
         try:
             response = self.api.make_request(endpoint, params=params)
@@ -55,6 +55,28 @@ class RecipeFinder:
             "number": 10,
             "apiKey": api_key
         }
+
+        # Adjust the parameters based on the selected category
+        if category in ["vegan", "vegetarian", "gluten free", "ketogenic"]:
+            params["diet"] = category  # Set diet parameter for specific diets
+        elif category == "fish":
+            params["includeIngredients"] = "fish"
+        elif category == "chicken":
+            params["includeIngredients"] = "chicken"
+        elif category == "beef":
+            params["includeIngredients"] = "beef"
+        elif category == "lamb":
+            params["includeIngredients"] = "lamb"
+        elif category == "pork":
+            params["includeIngredients"] = "pork"
+        elif category == "duck":
+            params["includeIngredients"] = "duck"
+        elif category == "dessert":
+            params["type"] = "dessert"
+        elif category == "salad":
+            params["type"] = "salad"
+
+
         try:
             response = self.api.make_request(endpoint, params=params)
             return response.get("results", [])

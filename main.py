@@ -66,7 +66,7 @@ class App:
                         recipes = self.get_recipe.find_recipes_by_category(category)
                         self.recipe.display_recipes(recipes, by_ingredients=False)
 
-                    elif category_choice == '9':
+                    elif category_choice == '13':
                         break  # Back to main menu
                     else:
                         print("Invalid choice. Please try again.")

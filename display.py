@@ -15,11 +15,15 @@ class Menu:
             "[2] Vegetarian Recipes",
             "[3] Gluten-Free Recipes",
             "[4] Fish Recipes",
-            "[5] Meat Recipes",
-            "[6] Desserts",
-            "[7] Healthy Snacks",
-            "[8] Raw Fruit and Veg Recipes",
-            "[9] Back to Main Menu"
+            "[5] Chicken Recipes",
+            "[6] Beef Recipes",
+            "[7] Lamb Recipes",
+            "[8] Pork Recipes",
+            "[9] Duck Recipes",
+            "[10] Desserts",
+            "[11] Salad Recipes",
+            "[12] Keto Recipes",
+            "[13] Back to Main Menu"
         ]
         # Creates instance of category mapping
         self.category_mapping = {
@@ -27,10 +31,14 @@ class Menu:
             '2': 'vegetarian',
             '3': 'gluten free',
             '4': 'fish',
-            '5': 'meat',
-            '6': 'dessert',
-            '7': 'healthy',
-            '8': 'raw'
+            '5': 'chicken',
+            '6': 'beef',
+            '7': 'lamb',
+            '8': 'pork',
+            '9': 'duck',
+            '10': 'dessert',
+            '11': 'salad',
+            '12': 'ketogenic'
         }
 
     def display_menu(self, menu_items, title):
