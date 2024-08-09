@@ -5,7 +5,7 @@ import requests
 
 # ===== Importing data from files ===========
 # Importing the Spoonacular API key from a separate config file
-from config import appid
+from config import api_key
 
 
 # ===== Establish API connection ===========
@@ -42,7 +42,7 @@ def fetch_recipes_by_ingredients(ingredients):
         "number": 10,  # Number of recipes to return
         "ranking": 2,  # Rank by minimizing missing ingredients
         "ignorePantry": True,  # Ignore common pantry ingredients
-        "apiKey": appid   # API key for authentication
+        "apiKey": api_key   # API key for authentication
     }
     try:
         response = requests.get(endpoint, params=params)   # Make the GET request with parameters
@@ -58,7 +58,7 @@ def fetch_recipes_by_category(category):
     endpoint = "https://api.spoonacular.com/recipes/complexSearch"   # API endpoint
     params = {
         "number": 10,  # Number of recipes to return
-        "apiKey": appid
+        "apiKey": api_key
     }
 
     # Adjust the parameters based on the selected category
@@ -95,7 +95,7 @@ def fetch_recipes_by_category(category):
 def fetch_recipe_instructions(recipe_id):
     endpoint = f"https://api.spoonacular.com/recipes/{recipe_id}/information" # API endpoint
     params = {
-        "apiKey": appid
+        "apiKey": api_key
     }
     try:
         response = requests.get(endpoint, params=params)    # Make the GET request with parameters
