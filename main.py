@@ -1,6 +1,6 @@
 # ===== Importing Libraries ===========
 from app import RecipeFinder, SpoonacularAPI
-
+from collections import deque
 # ===== Importing data from files ===========
 from config import api_key
 from display import Menu, Recipe
@@ -42,7 +42,7 @@ class App:
 # Method that runs the application
     def run(self):
         print(self.welcome_message)
-
+        total_titles = deque() # I created a list to add the recipe's name results
         while True:
             self.menu.display_menu(self.menu.main_menu_items, "Main Menu")
             choice = self.menu.get_choice("\nPlease enter your choice: ")
@@ -51,10 +51,18 @@ class App:
                 ingredients = self.recipe.get_user_ingredients()
                 recipes = self.get_recipe.find_recipes_by_ingredients(ingredients)
                 self.recipe.display_recipes(recipes, by_ingredients=True)
+                ingredients_titles = [recipe['title'] for recipe in recipes]
+                # Below I added it to the left because is our first option and just to use deque
+                total_titles.appendleft({'ingredient recipes': ingredients_titles})
+                # print(ingredients_titles)
+                # print(total_titles)
 
             elif choice == '2':
                 recipes = self.get_recipe.find_random_recipes()
                 self.recipe.display_recipes(recipes, by_ingredients=False)
+                random_titles = [recipe['title'] for recipe in recipes]
+                total_titles.append(f"Here are your random recipes: {random_titles}")
+                # print(random_titles)
 
             elif choice == '3':
                 while True:
@@ -65,12 +73,20 @@ class App:
                         category = self.menu.category_mapping[category_choice]
                         recipes = self.get_recipe.find_recipes_by_category(category)
                         self.recipe.display_recipes(recipes, by_ingredients=False)
+                        category_titles = [recipe['title'] for recipe in recipes]
+                        total_titles.append(f"Here are your recipes by category: {category_titles}")
+                        print(category_titles)
 
                     elif category_choice == '9':
                         break  # Back to main menu
                     else:
                         print("Invalid choice. Please try again.")
             elif choice == '4':
+                # print(total_titles)
+                for titles in total_titles:
+                    print(titles)
+
+            elif choice == '5':
                 print("Thank you for using our recipe app, Goodbye!")
                 break
             else:
