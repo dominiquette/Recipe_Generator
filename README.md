@@ -15,4 +15,4 @@ after a while trying different parts I realized that the function display_recipe
 I copy the new Dominique's display_recipes function from api-links and adapted to Eve code with classes and it work!
 + Some small thing: the welcome message is after the question about the name. I voted to remove that part
 I've only added it to add error handling but we would have other parts to add this.
-
++ I try the code without the function get_headers and it works, so I erased it
