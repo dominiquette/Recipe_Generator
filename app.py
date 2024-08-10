@@ -13,16 +13,10 @@ class SpoonacularAPI:
         # Creates an instance of the api key imported from config
         self.api_key = api_key
 
-    def get_headers(self):
-        return {
-            'Authorization': f'Bearer {self.api_key}',
-            'Content-Type': 'application/json'
-        }
 
     def make_request(self, endpoint, params=None):
         url = f'{self.base_url}/{endpoint}'
-        headers = self.get_headers()
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, params=params)
         response.raise_for_status()  # Raise an exception for HTTP errors
         return response.json()
 
