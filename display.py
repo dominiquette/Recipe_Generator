@@ -7,7 +7,8 @@ class Menu:
             "[1] Get recipes based on ingredients",
             "[2] Get random recipes",
             "[3] View Recipe Categories",
-            "[4] Exit"
+            "[4] View your Recipes names so far",
+            "[5] Exit"
         ]
         # Creates an instance of category menu items
         self.category_menu_items = [
@@ -66,6 +67,7 @@ class Menu:
                 print(f"Error getting the user's choice: {ve}")  # Resolves specific ValueError
             except Exception as e:
                 print(f"Unexpected error occurred: {e}")  # Accounts for other unexpected errors
+
 
 
 # Recipe class handles getting the list of ingredients and displaying it

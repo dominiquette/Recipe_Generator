@@ -16,3 +16,23 @@ I copy the new Dominique's display_recipes function from api-links and adapted t
 + Some small thing: the welcome message is after the question about the name. I voted to remove that part
 I've only added it to add error handling but we would have other parts to add this.
 + I try the code without the function get_headers and it works, so I erased it
+
+## Adding deque
+
+I modified main and display files
+
++ Display: I only edit adding a new category: "[4] View your Recipes names so far", please change the writing if you want
+
++ Main - I added:
+
+from collections import deque at first
+
+Only change the def run function:
+    + I added a line to create a list using deque: total_titles = deque()
+    + In each choice (1,2,3): 1. I added the titles of the recipes to the list 2. I leave the print mssg in case you  
+want to try it. 3. I added in two different ways to decide which one is the best (like dictionary or with a msg)
+    + I created a new category in the main menu with the code to show 
+
++ When we decided how we want it I could improve the way that the user see the results I don't know if we could do it   
+with decorators or adding a display_recipes_names function in the display file
+
