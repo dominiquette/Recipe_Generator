@@ -16,6 +16,7 @@ I copy the new Dominique's display_recipes function from api-links and adapted t
 + Some small thing: the welcome message is after the question about the name. I voted to remove that part
 I've only added it to add error handling but we would have other parts to add this.
 + I try the code without the function get_headers and it works, so I erased it
+
 ## Adding deque
 
 I modified main and display files
@@ -34,3 +35,4 @@ want to try it. 3. I added in two different ways to decide which one is the best
 
 + When we decided how we want it I could improve the way that the user see the results I don't know if we could do it   
 with decorators or adding a display_recipes_names function in the display file
+
