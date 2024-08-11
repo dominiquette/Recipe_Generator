@@ -52,8 +52,9 @@ class App:
                 recipes = self.get_recipe.find_recipes_by_ingredients(ingredients)
                 self.recipe.display_recipes(recipes, by_ingredients=True)
                 ingredients_titles = [recipe['title'] for recipe in recipes]
-                # Below I added it to the left because is our first option and just to use deque
-                total_titles.appendleft({'ingredient recipes': ingredients_titles})
+
+                # Below I added it to the left because is our first option
+                total_titles.appendleft(f"\n\33[1m - Here are your recipes by ingredient\33[0m: {', '.join(ingredients_titles)}")
                 # print(ingredients_titles)
                 # print(total_titles)
 
@@ -61,7 +62,7 @@ class App:
                 recipes = self.get_recipe.find_random_recipes()
                 self.recipe.display_recipes(recipes, by_ingredients=False)
                 random_titles = [recipe['title'] for recipe in recipes]
-                total_titles.append(f"Here are your random recipes: {random_titles}")
+                total_titles.append(f"\n\33[1m - Here are your random recipes:\33[0m {', '.join(random_titles)}")
                 # print(random_titles)
 
             elif choice == '3':
@@ -74,7 +75,7 @@ class App:
                         recipes = self.get_recipe.find_recipes_by_category(category)
                         self.recipe.display_recipes(recipes, by_ingredients=False)
                         category_titles = [recipe['title'] for recipe in recipes]
-                        total_titles.append(f"Here are your recipes by category: {category_titles}")
+                        total_titles.append(f"\n\33[1m - Here are your recipes by category:\33[0m {', '.join(category_titles)}")
                         print(category_titles)
 
                     elif category_choice == '9':
@@ -83,8 +84,11 @@ class App:
                         print("Invalid choice. Please try again.")
             elif choice == '4':
                 # print(total_titles)
+                print(f"\n\33[33m\33[40m\33[1mHere are your Recipes names so far: \33[0m")
                 for titles in total_titles:
+                    # self.recipe.display_deque()
                     print(titles)
+                print('-' * 100)
 
             elif choice == '5':
                 print("Thank you for using our recipe app, Goodbye!")

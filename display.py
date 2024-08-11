@@ -110,3 +110,5 @@ class Recipe:
 
             # Print a separator line for readability
             print('-' * 100)
+
+
