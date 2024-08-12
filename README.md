@@ -36,3 +36,9 @@ want to try it. 3. I added in two different ways to decide which one is the best
 + When we decided how we want it I could improve the way that the user see the results I don't know if we could do it   
 with decorators or adding a display_recipes_names function in the display file
 
+## Adjust the parameters based on the selected category
+
+12/08
+fixing the  def find_recipes_by_category(self, category) adding the if statements on 
+def fetch_recipes_by_category(category) on api-links branch
+
