@@ -64,6 +64,24 @@ class RecipeFinder:
             "number": 2,
             "apiKey": api_key
         }
+        if category in ["vegan", "vegetarian", "gluten free", "ketogenic"]:
+            params["diet"] = category  # Set diet parameter for specific diets
+        elif category == "fish":
+            params["includeIngredients"] = "fish"
+        elif category == "chicken":
+            params["includeIngredients"] = "chicken"
+        elif category == "beef":
+            params["includeIngredients"] = "beef"
+        elif category == "lamb":
+            params["includeIngredients"] = "lamb"
+        elif category == "pork":
+            params["includeIngredients"] = "pork"
+        elif category == "duck":
+            params["includeIngredients"] = "duck"
+        elif category == "dessert":
+            params["type"] = "dessert"
+        elif category == "salad":
+            params["type"] = "salad"
         try:
             response = self.api.make_request(endpoint, params=params)
             if not response:
