@@ -60,17 +60,23 @@ class App:
             if choice == '1':
                 ingredients = self.recipe.get_user_ingredients()
                 recipes = self.get_recipe.find_recipes_by_ingredients(ingredients)
+                # if there is no API key in config.py, will return to main menu
+                if recipes is None:
+                    print("\nReturning to main menu...")
+                    continue
                 self.recipe.display_recipes(recipes, by_ingredients=True)
                 ingredients_titles = [recipe['title'] for recipe in recipes]
 
                 # Below I added it to the left because is our first option
-                total_titles.appendleft(
-                    f"\n\33[1m - Here are your recipes by ingredient\33[0m: {', '.join(ingredients_titles)}")
+                total_titles.appendleft(f"\n\33[1m - Here are your recipes by ingredient\33[0m: {', '.join(ingredients_titles)}")
                 # print(ingredients_titles)
                 # print(total_titles)
 
             elif choice == '2':
                 recipes = self.get_recipe.find_random_recipes()
+                if recipes is None:
+                    print("\nReturning to main menu...")
+                    continue
                 self.recipe.display_recipes(recipes, by_ingredients=False)
                 random_titles = [recipe['title'] for recipe in recipes]
                 total_titles.append(f"\n\33[1m - Here are your random recipes:\33[0m {', '.join(random_titles)}")
@@ -84,16 +90,19 @@ class App:
                     if category_choice in self.menu.category_mapping:
                         category = self.menu.category_mapping[category_choice]
                         recipes = self.get_recipe.find_recipes_by_category(category)
+                        if recipes is None:
+                            print("\nReturning to main menu...")
+                            break
                         self.recipe.display_recipes(recipes, by_ingredients=False)
                         category_titles = [recipe['title'] for recipe in recipes]
-                        total_titles.append(
-                            f"\n\33[1m - Here are your recipes by category:\33[0m {', '.join(category_titles)}")
-                        print(category_titles)
+                        total_titles.append(f"\n\33[1m - Here are your recipes by category:\33[0m {', '.join(category_titles)}")
+                        # print(category_titles)
 
                     elif category_choice == '9':
                         break  # Back to main menu
                     else:
                         print("Invalid choice. Please try again.")
+
             elif choice == '4':
                 # print(total_titles)
                 print(f"\n\33[33m\33[40m\33[1mHere are your Recipes names so far: \33[0m")

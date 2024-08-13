@@ -1,4 +1,5 @@
 # ===== Importing Libraries ===========
+import requests
 from functools import wraps  # `wraps` is used to preserve the original function's metadata when decorating it
 from config import LOGGING_ENABLED  # Import a configuration setting to enable or disable logging
 
@@ -22,6 +23,7 @@ def log_function_call(func):
         Returns:
             function: The wrapped function with logging functionality.
         """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         if LOGGING_ENABLED:
@@ -30,31 +32,30 @@ def log_function_call(func):
         if LOGGING_ENABLED:
             print(f"Function {func.__name__} returned: {result}")
         return result
+
     return wrapper
 
 
-# Decorator for error handling
 def handle_errors(func):
     """
-        A decorator that provides error handling for the decorated function.
+    A decorator that provides error handling for the decorated function.
 
-        This decorator wraps the target function in a try-except block to handle exceptions that may
-        occur during execution. It is particularly useful for handling user input errors in a
-        console application, where the program should not crash due to invalid input.
+    This decorator wraps the target function in a try-except block to handle exceptions that may
+    occur during execution. It is particularly useful for handling user input errors in a
+    console application, where the program should not crash due to invalid input.
 
-        - If a `ValueError` is raised and it's related to empty input, the decorator will prompt the user
-          to re-enter the input by continuing the loop.
-        - For any other exceptions, the error is printed, and the function returns `None` to signal failure.
+    - If a `ValueError` is raised and it's related to empty input, the decorator will prompt the user
+      to re-enter the input by continuing the loop.
+    - For `HTTPError` related to missing or invalid API keys, a specific error message will be shown.
+    - For any other exceptions, the error is printed, and the function returns `None` to signal failure.
 
-        This ensures that the application remains robust and user-friendly by preventing crashes and
-        providing clear error messages.
+    Args:
+        func (function): The function to be decorated.
 
-        Args:
-            func (function): The function to be decorated.
+    Returns:
+        function: The wrapped function with error handling functionality.
+    """
 
-        Returns:
-            function: The wrapped function with error handling functionality.
-        """
     @wraps(func)
     def wrapper(*args, **kwargs):
         while True:
@@ -66,6 +67,13 @@ def handle_errors(func):
                 if "Input cannot be empty" in str(e):
                     continue
                 # For other ValueErrors, return None (or handle differently if desired)
+                return None
+            except requests.exceptions.HTTPError as e:
+                # Handle HTTP errors, especially for missing or invalid API keys
+                if e.response.status_code == 401:
+                    print("\nError!: No API key found or invalid API key. Please check if API key is entered correctly.")
+                else:
+                    print(f"HTTP Error: {e}")
                 return None
             except Exception as e:
                 # Catch any other unexpected exceptions and print an error message
