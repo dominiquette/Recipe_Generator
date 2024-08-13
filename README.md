@@ -43,7 +43,7 @@ fixing the  def find_recipes_by_category(self, category) adding the if statement
 def fetch_recipes_by_category(category) on api-links branch
 
 ## Unit testing first draft
-
+13/08
 + General commments:
 I used all I have to do it. sessions, code from the sessions, google, IA  
 To summarize I used the file test_unit_test_example from Sophia's lesson about unit test  
@@ -78,7 +78,8 @@ Also, I couldn't find a way for the app to give me this error.
 Hafsa I don't know what I'm doing wrong or maybe we need a redo
 It jumps to a ValueError("API response is empty or invalid.") 
 Here's an example 
-![img.png](img.png)
+![image](https://github.com/user-attachments/assets/6ddb5d2c-e2d5-40b1-bcdc-a0de09d0b000)
+
     + Last, I want to add something related to assertIn to check if the ingredient was in the app response to combine
 display and app test, but it was too hard for me
 
