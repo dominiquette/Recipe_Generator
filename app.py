@@ -3,7 +3,7 @@ import requests
 
 # ===== Importing data from files ===========
 from config import api_key
-
+from decorators import log_function_call, handle_errors  # Import decorators
 
 # ===== Establish API connection ===========
 # SpoonacularAPI class handles making requests to the API
@@ -14,19 +14,13 @@ class SpoonacularAPI:
         # Creates an instance of the API key imported from config
         self.api_key = api_key
 
+    @log_function_call
+    @handle_errors
     def make_request(self, endpoint, params=None):
         url = f'{self.base_url}/{endpoint}'
-        try:  # Try-Except Block for any HTTP and network errors
-            response = requests.get(url, params=params)
-            response.raise_for_status()  # # Raises an exception for HTTP errors
-            return response.json()
-        except requests.HTTPError as http_err:
-            print(f"HTTP error occurred: {http_err}")  # Resolves specific HTTP errors
-        except requests.RequestException as request_error:
-            print(f"Request error occurred: {request_error}")  # Resolves general request errors
-        except Exception as e:
-            print(f"An issue occurred while connecting to the Spoonacular API:: {e}")
-        return {}
+        response = requests.get(url, params=params)
+        response.raise_for_status()  # # Raises an exception for HTTP errors
+        return response.json()
 
 
 # RecipeFinder class handles getting recipes from the API
@@ -35,6 +29,8 @@ class RecipeFinder:
         # Creates an instance of the API
         self.api = api
 
+    @log_function_call
+    @handle_errors
     def find_recipes_by_ingredients(self, ingredients):
         endpoint = "recipes/findByIngredients"
         params = {
@@ -44,19 +40,13 @@ class RecipeFinder:
             "apiKey": self.api.api_key,  # Uses the API key from the API instance
             "ignorePantry": "true"  # Ignore typical pantry items
         }
-        try:  # Try-Except Block for API request errors
-            response = self.api.make_request(endpoint, params=params)
-            if not response:
-                raise ValueError("API response is empty or invalid.")  # ValueError for empty or invalid responses
-            return response
-        except ValueError as value_error:
-            print(f"Validation error: {value_error}")  # Resolves specific ValueError
-        except requests.RequestException as request_error:
-            print(f"Request error occurred: {request_error}")  # Resolves general request errors
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-        return []
+        response = self.api.make_request(endpoint, params=params)
+        if not response:
+            raise ValueError("API response is empty or invalid.")  # ValueError for empty or invalid responses
+        return response
 
+    @log_function_call
+    @handle_errors
     def find_recipes_by_category(self, category):
         endpoint = "recipes/complexSearch"
         params = {
@@ -82,52 +72,35 @@ class RecipeFinder:
             params["type"] = "dessert"
         elif category == "salad":
             params["type"] = "salad"
-        try:
-            response = self.api.make_request(endpoint, params=params)
-            if not response:
-                raise ValueError("API response is empty or invalid.")  # ValueError for empty or invalid responses
-            return response.get("results", [])
-        except ValueError as value_error:
-            print(f"Validation error: {value_error}")  # Resolves specific ValueError
-        except requests.RequestException as request_error:
-            print(f"Request error occurred: {request_error}")  # Resolves general request errors
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-        return []
 
+        response = self.api.make_request(endpoint, params=params)
+        if not response:
+            raise ValueError("API response is empty or invalid.")  # ValueError for empty or invalid responses
+        return response.get("results", [])
+
+    @log_function_call
+    @handle_errors
     def find_recipe_instructions(self, recipe_id):
         endpoint = f"recipes/{recipe_id}/information"
         params = {
             "apiKey": self.api.api_key  # Uses the API key from the API instance
         }
-        try:  # Try-Except Block
-            response = self.api.make_request(endpoint, params=params)
-            if not response:
-                raise ValueError("API response is empty or invalid.")  # # ValueError for empty or invalid responses
-            return response
-        except ValueError as value_error:
-            print(f"Validation error: {value_error}")  # Resolves specific ValueError
-        except requests.RequestException as request_error:
-            print(f"Request error occurred: {request_error}")  # Resolves general request errors
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-        return {}
+        response = self.api.make_request(endpoint, params=params)
+        if not response:
+            raise ValueError("API response is empty or invalid.")  # # ValueError for empty or invalid responses
+        return response
 
+    @log_function_call
+    @handle_errors
     def find_random_recipes(self):
         endpoint = "recipes/random"
         params = {
             "number": 2,
             "apiKey": self.api.api_key  # Uses the API key from the API instance
         }
-        try:
-            response = self.api.make_request(endpoint, params=params)
-            if "recipes" in response:
-                return response["recipes"]
-            else:
-                print("Unexpected response format:", response)  # Resolves unexpected response formats
-                return []
-        except requests.RequestException as request_error:
-            print(f"Request error occurred: {request_error}")  # Resolves any errors that occur during HTTP requests
-        except Exception as e:
-            print(f"Error fetching random recipes: {e}")
-        return []
+        response = self.api.make_request(endpoint, params=params)
+        if "recipes" in response:
+            return response["recipes"]
+        else:
+            print("Unexpected response format:", response)  # Resolves unexpected response formats
+            return []
