@@ -7,7 +7,6 @@ from config import api_key
 from decorators import log_function_call, handle_errors  # Import the decorators
 
 
-
 # App class is the main application class, handles running the application
 class App:
     def __init__(self):
@@ -30,7 +29,6 @@ class App:
         self.show_recipe = RecipeDisplay(self.get_recipe)
         # Creates an instance of the SaveRecipe class
         self.saved_recipes = SaveRecipe()
-
 
     # Method that runs the application
     @log_function_call  # Log when the run method starts and ends
@@ -98,7 +96,7 @@ class App:
 
                 else:
                     print("Invalid choice. Please try again.")
-                    
+
             except ValueError as ve:
                 print(f"Value error occurred: {ve}")  # Resolves specific ValueError
             except KeyError as ke:
