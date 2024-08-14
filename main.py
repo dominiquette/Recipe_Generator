@@ -1,126 +1,112 @@
-# ===== Importing Libraries ===========
-from app import RecipeFinder, SpoonacularAPI
-from collections import deque
 # ===== Importing data from files ===========
+from user_input import UserInput
+from display import MenuDisplay, RecipeDisplay
+from recipe_saver import SaveRecipe
+from app import RecipeFinder, SpoonacularAPI
 from config import api_key
-from display import Menu, Recipe
 from decorators import log_function_call, handle_errors  # Import the decorators
 
-
-# User class handles getting the user's info and calls the method to initialise the name attribute
-# This way the prompt will always happen and the object (User) will have a name attribute set at the start
-class User:
-    def __init__(self):
-        self.name = self.get_name()
-
-    @log_function_call
-    @handle_errors
-    def get_name(self):
-        while True:
-            name = input("What's your name?: ").strip()
-            if not name:
-                print("\nName cannot be empty. Please enter your name again.")
-            else:
-                print(f"\nWelcome to our console app, {name}! What do you need help with?")
-                return name
 
 
 # App class is the main application class, handles running the application
 class App:
     def __init__(self):
+        # Creates an instance of the user class
+        # The get_name method is called here as it is instantiated and called in the user class init method
+        self.user = UserInput()
         # Initialise a welcome message as a string
-        self.welcome_message = """
+        self.welcome_message = f"""
         ·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚‧₊⁺⁺₊‧˚·͙ ‧₊⁺⁺
-            🧄🍲🍎 Welcome to Group 5 Recipe Generator 🍉🍰🥕 
+        🧄🍲🍎 Welcome {self.user.name}, to Group 5 Recipe generator 🍉🍰🥕 
         ·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚ ‧₊⁺⁺₊‧˚·͙ ‧₊⁺⁺
         """
-        print(self.welcome_message)
-        # Creates an instance of the User class
-        # The get_name method is called here as it is instantiated and called in the User class __init__ method
-        self.user = User()
         # Creates an instance of the Menu class
-        self.menu = Menu()
+        self.menu = MenuDisplay()
         # Creates a local instance of the SpoonacularAPI class
         api = SpoonacularAPI("https://api.spoonacular.com", api_key)
         # Creates an instance of the RecipeFinder class, passing the api instance
         self.get_recipe = RecipeFinder(api)
         # Creates an instance of the Recipe class, passing the get_recipe instance
-        self.recipe = Recipe(self.get_recipe)
+        self.show_recipe = RecipeDisplay(self.get_recipe)
+        # Creates an instance of the SaveRecipe class
+        self.saved_recipes = SaveRecipe()
+
 
     # Method that runs the application
     @log_function_call  # Log when the run method starts and ends
     @handle_errors  # Handle any exceptions uniformly
     def run(self):
-        total_titles = deque()  # I created a list to add the recipe's name results
+        print(self.welcome_message)
         while True:
+            try:
+                self.menu.display_menu(self.menu.main_menu_items, "Main Menu")
+                choice = self.user.get_choice("\nWhat would you like to do? ").strip()
 
-            self.menu.display_menu(self.menu.main_menu_items, "Main Menu")
-            choice = self.menu.get_choice("\nPlease enter your choice: ").strip()
+                if choice == '1':
+                    ingredients = self.user.get_user_ingredients()
+                    recipes = self.get_recipe.find_recipes_by_ingredients(ingredients)
+                    # if there is no API key in config.py, will return to main menu
+                    if recipes is None:
+                        print("\nReturning to main menu...")
+                        continue
+                    self.show_recipe.display_recipes(recipes, by_ingredients=True)
+                    ingredients_titles = [recipe['title'] for recipe in recipes]
 
-            if choice == '1':
-                ingredients = self.recipe.get_user_ingredients()
-                recipes = self.get_recipe.find_recipes_by_ingredients(ingredients)
-                # if there is no API key in config.py, will return to main menu
-                if recipes is None:
-                    print("\nReturning to main menu...")
-                    continue
-                self.recipe.display_recipes(recipes, by_ingredients=True)
-                ingredients_titles = [recipe['title'] for recipe in recipes]
+                    if self.user.get_save_recipe_choice():
+                        self.saved_recipes.save_recipes(ingredients_titles, 'Ingredients')
 
-                # Below I added it to the left because is our first option
-                total_titles.appendleft(f"\n\33[1m - Here are your recipes by ingredient\33[0m: {', '.join(ingredients_titles)}")
-                # print(ingredients_titles)
-                # print(total_titles)
+                elif choice == '2':
+                    recipes = self.get_recipe.find_random_recipes()
+                    if recipes is None:
+                        print("\nReturning to main menu...")
+                        continue
+                    self.show_recipe.display_recipes(recipes, by_ingredients=False)
+                    random_titles = [recipe['title'] for recipe in recipes]
 
-            elif choice == '2':
-                recipes = self.get_recipe.find_random_recipes()
-                if recipes is None:
-                    print("\nReturning to main menu...")
-                    continue
-                self.recipe.display_recipes(recipes, by_ingredients=False)
-                random_titles = [recipe['title'] for recipe in recipes]
-                total_titles.append(f"\n\33[1m - Here are your random recipes:\33[0m {', '.join(random_titles)}")
-                # print(random_titles)
+                    if self.user.get_save_recipe_choice():
+                        self.saved_recipes.save_recipes(random_titles, 'Random')
 
-            elif choice == '3':
-                while True:
-                    self.menu.display_menu(self.menu.category_menu_items, "Recipe Categories")
-                    category_choice = self.menu.get_choice("\nPlease select a category: ").strip()
+                elif choice == '3':
+                    while True:
+                        self.menu.display_menu(self.menu.category_menu_items, "Recipe Categories")
+                        category_choice = self.user.get_choice("\nPlease select a category: ").strip()
 
-                    if category_choice in self.menu.category_mapping:
-                        category = self.menu.category_mapping[category_choice]
-                        recipes = self.get_recipe.find_recipes_by_category(category)
-                        if recipes is None:
-                            print("\nReturning to main menu...")
-                            break
-                        self.recipe.display_recipes(recipes, by_ingredients=False)
-                        category_titles = [recipe['title'] for recipe in recipes]
-                        total_titles.append(f"\n\33[1m - Here are your recipes by category:\33[0m {', '.join(category_titles)}")
-                        # print(category_titles)
+                        if category_choice in self.menu.category_mapping:
+                            category = self.menu.category_mapping[category_choice]
+                            recipes = self.get_recipe.find_recipes_by_category(category)
+                            if recipes is None:
+                                print("\nReturning to main menu...")
+                                break
+                            self.show_recipe.display_recipes(recipes, by_ingredients=False)
+                            category_titles = [recipe['title'] for recipe in recipes]
 
-                    elif category_choice == '9':
-                        break  # Back to main menu
-                    else:
-                        print("Invalid choice. Please try again.")
+                            if self.user.get_save_recipe_choice():
+                                self.saved_recipes.save_recipes(category_titles, category)
 
-            elif choice == '4':
-                # print(total_titles)
-                print(f"\n\33[33m\33[40m\33[1mHere are your Recipes names so far: \33[0m")
-                for titles in total_titles:
-                    # self.recipe.display_deque()
-                    print(titles)
-                print('-' * 100)
+                        elif category_choice == '9':
+                            break  # Back to main menu
+                        else:
+                            print("Invalid choice. Please try again.")
 
-            elif choice == '5':
-                print("Thank you for using our recipe app, Goodbye!")
-                break
-            else:
-                print("Invalid choice. Please try again.")
+                elif choice == '4':
+                    # Calls the display_saved_recipes function and passing the get_saved_recipes function as an argument
+                    self.show_recipe.display_saved_recipes(self.saved_recipes.get_saved_recipes())
+
+                elif choice == '5':
+                    print("Thank you for using our recipe app, goodbye!")
+                    exit()  # Terminates the program execution
+
+                else:
+                    print("Invalid choice. Please try again.")
+                    
+            except ValueError as ve:
+                print(f"Value error occurred: {ve}")  # Resolves specific ValueError
+            except KeyError as ke:
+                print(f"Invalid key used: {ke}")  # Resolves specific KeyError
+            except Exception as e:
+                print(f"An unexpected error occurred: {e}")  # Accounts for any other unexpected errors
 
 
 # ===== Main ===========
 if __name__ == "__main__":
-    # Creates an instance of the App class
-    app = App()
-    # Calls the run method of the App instance
-    app.run()
+    app = App().run()
