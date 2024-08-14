@@ -53,7 +53,9 @@ class MenuDisplay:
         # Print each menu item, padded to fit the box width
         for item in menu_items:
             print(f"\t║ {item.ljust(width - 4)} ║")
-        print("\t╚" + "═" * (width - 2) + "╝")  # Create the bottom border
+
+        # Create the bottom border
+        print("\t╚" + "═" * (width - 2) + "╝")
 
 
 # Recipe class handles getting the list of ingredients and displaying it
@@ -70,11 +72,11 @@ class RecipeDisplay:
             print("No recipes found.")
             return
 
-            # Loop through each recipe in the list, printing their index before the name
-            # Using index in displaying the recipes makes the option to save recipes by index user-friendly
-            for index, recipe in enumerate(recipes, start=1):
-                # Print the recipe title with styling for emphasis
-                print(f"\n\33[33m\33[40m\33[1mRECIPE {index}: {recipe['title']} \33[0m\n")  # Black background, yellow font.
+        # Loop through each recipe in the list, printing their index before the name
+        # Using index in displaying the recipes makes the option to save recipes by index user-friendly
+        for index, recipe in enumerate(recipes, start=1):
+            # Print the recipe title with styling for emphasis
+            print(f"\n\33[33m\33[40m\33[1mRECIPE {index}: {recipe['title']} \33[0m\n")  # Black background, yellow font.
 
             if by_ingredients:
                 # Extract and print used ingredients
@@ -109,32 +111,23 @@ class RecipeDisplay:
 
                 # Print a separator line for readability
                 print('-' * 100)
-        except KeyError as ke:
-            print(f"Error with recipe data format: {ke}")  # Resolves KeyError for incorrect data format
-        except Exception as e:
-            print(f"Error displaying the recipes: {e}")  # Accounts for other unexpected errors
 
     # Function that handles displaying the saved recipes
+    @log_function_call
+    @handle_errors
     def display_saved_recipes(self, saved_recipes):
-        try:
-            # Check if dictionary is empty
-            if not saved_recipes:
-                print("No saved recipes.")
-                return
+        # Check if dictionary is empty
+        if not saved_recipes:
+            print("No saved recipes.")
+            return
 
-            # Prints header
-            print("\n\33[33m\33[40m\33[1mHere are your saved recipes:\33[0m")
-            # Iterates over the categories connected to each recipe title in the dict
-            # Items() is used to iterate over key-value pairs
-            for category, title in saved_recipes.items():
-                # Joins the recipe titles to one string separated by commas
-                print(f"\33[1m - Saved Recipes by {category}:\33[0m {', '.join(title)}")
+        # Prints header
+        print("\n\33[33m\33[40m\33[1mHere are your saved recipes:\33[0m")
+        # Iterates over the categories connected to each recipe title in the dict
+        # Items() is used to iterate over key-value pairs
+        for category, title in saved_recipes.items():
+            # Joins the recipe titles to one string separated by commas
+            print(f"\33[1m - Saved Recipes by {category}:\33[0m {', '.join(title)}")
 
-            # Print a separator line for readability
-            print('-' * 100)
-        # Resolves KeyError for incorrect data format
-        except KeyError as ke:
-            print(f"Error with saved recipes data format: {ke}")
-        # Accounts for other unexpected errors
-        except Exception as e:
-            print(f"Error displaying saved recipes: {e}")
+        # Print a separator line for readability
+        print('-' * 100)

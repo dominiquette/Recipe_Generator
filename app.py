@@ -5,6 +5,7 @@ import requests
 from config import api_key
 from decorators import log_function_call, handle_errors  # Import decorators
 
+
 # ===== Establish API connection ===========
 # SpoonacularAPI class handles making requests to the API
 class SpoonacularAPI:
