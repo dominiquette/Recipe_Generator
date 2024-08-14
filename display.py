@@ -1,13 +1,13 @@
 # Menu class that handles displaying and managing the menu options
-class Menu:
+class MenuDisplay:
     def __init__(self):
         # Displaying options
         # Creates an instance of main menu items
         self.main_menu_items = [
             "[1] Get recipes based on ingredients",
             "[2] Get random recipes",
-            "[3] View Recipe Categories",
-            "[4] View your Recipes names so far",
+            "[3] View recipe categories",
+            "[4] View your saved recipes",
             "[5] Exit"
         ]
         # Creates an instance of category menu items
@@ -55,38 +55,12 @@ class Menu:
         except Exception as e:
             print(f"Unexpected error occurred while displaying menu: {e}")  # Accounts for other unexpected errors
 
-    # Prompts the user to input their choice
-    def get_choice(self, prompt):
-        while True:
-            try:
-                choice = input(prompt).strip()
-                if not choice:
-                    raise ValueError("Input cannot be empty.")  # ValueError for empty input
-                return choice
-            except ValueError as ve:
-                print(f"Error getting the user's choice: {ve}")  # Resolves specific ValueError
-            except Exception as e:
-                print(f"Unexpected error occurred: {e}")  # Accounts for other unexpected errors
-
-
 
 # Recipe class handles getting the list of ingredients and displaying it
 # Interacts with the RecipeFinder to get the recipes from the API
-class Recipe:
+class RecipeDisplay:
     def __init__(self, get):
         self.get = get
-
-    def get_user_ingredients(self):  # Check with Eve why do we want a static method or a function
-        try:
-            ingredients = input("\nPlease enter the ingredients you have, separated by commas: ").strip()
-            # Returns the string as a list, so it can be passed correctly to the Spoonacular API
-            return [ingredient.strip() for ingredient in ingredients.split(',')]
-        except ValueError as ve:
-            print(f"Error retrieving user's ingredients: {ve}")  # Resolves specific ValueError
-            return []
-        except Exception as e:
-            print(f"Error retrieving user's ingredients: {e}")  # Accounts for other unexpected errors
-            return []
 
     def display_recipes(self, recipes, by_ingredients=True):
         try:
@@ -95,10 +69,11 @@ class Recipe:
                 print("No recipes found.")
                 return
 
-            # Loop through each recipe in the list
-            for recipe in recipes:
+            # Loop through each recipe in the list, printing their index before the name
+            # Using index in displaying the recipes makes the option to save recipes by index user-friendly
+            for index, recipe in enumerate(recipes, start=1):
                 # Print the recipe title with styling for emphasis
-                print(f"\n\33[33m\33[40m\33[1mRECIPE: {recipe['title']} \33[0m\n")  # Black background, yellow font.
+                print(f"\n\33[33m\33[40m\33[1mRECIPE {index}: {recipe['title']} \33[0m\n")  # Black background, yellow font.
 
                 if by_ingredients:
                     # Extract and print used ingredients
@@ -137,3 +112,28 @@ class Recipe:
             print(f"Error with recipe data format: {ke}")  # Resolves KeyError for incorrect data format
         except Exception as e:
             print(f"Error displaying the recipes: {e}")  # Accounts for other unexpected errors
+
+    # Function that handles displaying the saved recipes
+    def display_saved_recipes(self, saved_recipes):
+        try:
+            # Check if dictionary is empty
+            if not saved_recipes:
+                print("No saved recipes.")
+                return
+
+            # Prints header
+            print("\n\33[33m\33[40m\33[1mHere are your saved recipes:\33[0m")
+            # Iterates over the categories connected to each recipe title in the dict
+            # Items() is used to iterate over key-value pairs
+            for category, title in saved_recipes.items():
+                # Joins the recipe titles to one string separated by commas
+                print(f"\33[1m - Saved Recipes by {category}:\33[0m {', '.join(title)}")
+
+            # Print a separator line for readability
+            print('-' * 100)
+        # Resolves KeyError for incorrect data format
+        except KeyError as ke:
+            print(f"Error with saved recipes data format: {ke}")
+        # Accounts for other unexpected errors
+        except Exception as e:
+            print(f"Error displaying saved recipes: {e}")
