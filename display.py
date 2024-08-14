@@ -1,3 +1,8 @@
+# ===== Importing data from files ===========
+from decorators import log_function_call, handle_errors
+
+
+# ===== Menu class handles displaying menu options ===========
 # Menu class that handles displaying and managing the menu options
 class MenuDisplay:
     def __init__(self):
@@ -34,26 +39,21 @@ class MenuDisplay:
             '8': 'raw'
         }
 
+    @log_function_call
+    @handle_errors
     def display_menu(self, menu_items, title):
         # Define the width of the box, including borders
         width = 44
 
-        try:
-            # Create the top border
-            print("\n\t╔" + "═" * (width - 2) + "╗")
-            print(f"\t║ {title.ljust(width - 4)} ║")
-            print("\t╠" + "═" * (width - 2) + "╣")
+        # Create the top border
+        print("\n\t╔" + "═" * (width - 2) + "╗")
+        print(f"\t║ {title.ljust(width - 4)} ║")
+        print("\t╠" + "═" * (width - 2) + "╣")
 
-            # Print each menu item, padded to fit the box width
-            for item in menu_items:
-                print(f"\t║ {item.ljust(width - 4)} ║")
-
-            # Create the bottom border
-            print("\t╚" + "═" * (width - 2) + "╝")
-        except (TypeError, ValueError) as e:
-            print(f"Error displaying the menu: {e}")  # Resolves TypeError and ValueError
-        except Exception as e:
-            print(f"Unexpected error occurred while displaying menu: {e}")  # Accounts for other unexpected errors
+        # Print each menu item, padded to fit the box width
+        for item in menu_items:
+            print(f"\t║ {item.ljust(width - 4)} ║")
+        print("\t╚" + "═" * (width - 2) + "╝")  # Create the bottom border
 
 
 # Recipe class handles getting the list of ingredients and displaying it
@@ -62,12 +62,13 @@ class RecipeDisplay:
     def __init__(self, get):
         self.get = get
 
+    @log_function_call
+    @handle_errors
     def display_recipes(self, recipes, by_ingredients=True):
-        try:
-            # Check if the recipes list is empty
-            if not recipes:
-                print("No recipes found.")
-                return
+        # Check if the recipes list is empty
+        if not recipes:
+            print("No recipes found.")
+            return
 
             # Loop through each recipe in the list, printing their index before the name
             # Using index in displaying the recipes makes the option to save recipes by index user-friendly
@@ -75,36 +76,36 @@ class RecipeDisplay:
                 # Print the recipe title with styling for emphasis
                 print(f"\n\33[33m\33[40m\33[1mRECIPE {index}: {recipe['title']} \33[0m\n")  # Black background, yellow font.
 
-                if by_ingredients:
-                    # Extract and print used ingredients
-                    used_ingredients = [ingredient['name'] for ingredient in recipe.get('usedIngredients', [])]
-                    missed_ingredients = [ingredient['name'] for ingredient in recipe.get('missedIngredients', [])]
-                    print(f"\33[1mUsed ingredients:\33[0m")
-                    for ingredient in used_ingredients:
-                        print(f" - {ingredient}")  # Prints inline points. Example: - Chicken
-                    print(f"\n\33[1mMissing ingredients:\33[0m")
-                    for ingredient in missed_ingredients:
-                        print(f" - {ingredient}")
+            if by_ingredients:
+                # Extract and print used ingredients
+                used_ingredients = [ingredient['name'] for ingredient in recipe.get('usedIngredients', [])]
+                missed_ingredients = [ingredient['name'] for ingredient in recipe.get('missedIngredients', [])]
+                print(f"\33[1mUsed ingredients:\33[0m")
+                for ingredient in used_ingredients:
+                    print(f" - {ingredient}")  # Prints inline points. Example: - Chicken
+                print(f"\n\33[1mMissing ingredients:\33[0m")
+                for ingredient in missed_ingredients:
+                    print(f" - {ingredient}")
 
-                # Fetch and display recipe instructions and ingredients
-                recipe_info = self.get.find_recipe_instructions(recipe['id'])
-                extended_ingredients = recipe_info.get('extendedIngredients', [])
-                if extended_ingredients:
-                    # Print the list of all ingredients needed for the recipe
-                    print(f"\n\33[1mIngredients:\33[0m")
-                    for ingredient in extended_ingredients:
-                        print(f" - {ingredient['original']}")
-                else:
-                    print("No ingredients available.")
+            # Fetch and display recipe instructions and ingredients
+            recipe_info = self.get.find_recipe_instructions(recipe['id'])
+            extended_ingredients = recipe_info.get('extendedIngredients', [])
+            if extended_ingredients:
+                # Print the list of all ingredients needed for the recipe
+                print(f"\n\33[1mIngredients:\33[0m")
+                for ingredient in extended_ingredients:
+                    print(f" - {ingredient['original']}")
+            else:
+                print("No ingredients available.")
 
-                # Extract and print step-by-step cooking instructions
-                instructions = recipe_info.get('analyzedInstructions', [])
-                if instructions:
-                    print("\n\33[4m\33[1mInstructions:\33[0m")
-                    for step in instructions[0]['steps']:
-                        print(f"Step {step['number']}: {step['step']}")
-                else:
-                    print("No instructions available.")
+            # Extract and print step-by-step cooking instructions
+            instructions = recipe_info.get('analyzedInstructions', [])
+            if instructions:
+                print("\n\33[4m\33[1mInstructions:\33[0m")
+                for step in instructions[0]['steps']:
+                    print(f"Step {step['number']}: {step['step']}")
+            else:
+                print("No instructions available.")
 
                 # Print a separator line for readability
                 print('-' * 100)

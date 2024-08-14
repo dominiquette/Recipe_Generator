@@ -4,6 +4,8 @@ from display import MenuDisplay, RecipeDisplay
 from recipe_saver import SaveRecipe
 from app import RecipeFinder, SpoonacularAPI
 from config import api_key
+from decorators import log_function_call, handle_errors  # Import the decorators
+
 
 
 # App class is the main application class, handles running the application
@@ -31,6 +33,8 @@ class App:
 
 
     # Method that runs the application
+    @log_function_call  # Log when the run method starts and ends
+    @handle_errors  # Handle any exceptions uniformly
     def run(self):
         print(self.welcome_message)
         while True:
@@ -41,6 +45,10 @@ class App:
                 if choice == '1':
                     ingredients = self.user.get_user_ingredients()
                     recipes = self.get_recipe.find_recipes_by_ingredients(ingredients)
+                    # if there is no API key in config.py, will return to main menu
+                    if recipes is None:
+                        print("\nReturning to main menu...")
+                        continue
                     self.show_recipe.display_recipes(recipes, by_ingredients=True)
                     ingredients_titles = [recipe['title'] for recipe in recipes]
 
@@ -49,6 +57,9 @@ class App:
 
                 elif choice == '2':
                     recipes = self.get_recipe.find_random_recipes()
+                    if recipes is None:
+                        print("\nReturning to main menu...")
+                        continue
                     self.show_recipe.display_recipes(recipes, by_ingredients=False)
                     random_titles = [recipe['title'] for recipe in recipes]
 
@@ -63,6 +74,9 @@ class App:
                         if category_choice in self.menu.category_mapping:
                             category = self.menu.category_mapping[category_choice]
                             recipes = self.get_recipe.find_recipes_by_category(category)
+                            if recipes is None:
+                                print("\nReturning to main menu...")
+                                break
                             self.show_recipe.display_recipes(recipes, by_ingredients=False)
                             category_titles = [recipe['title'] for recipe in recipes]
 
@@ -84,6 +98,7 @@ class App:
 
                 else:
                     print("Invalid choice. Please try again.")
+                    
             except ValueError as ve:
                 print(f"Value error occurred: {ve}")  # Resolves specific ValueError
             except KeyError as ke:
