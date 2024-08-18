@@ -42,3 +42,20 @@ with decorators or adding a display_recipes_names function in the display file
 fixing the  def find_recipes_by_category(self, category) adding the if statements on 
 def fetch_recipes_by_category(category) on api-links branch
 
+18/08
+
+Errors:
+1) I found that we set as param "type": category
+In category include things that the api has in other params, for ex. fish is not
+2) The if statements categories didn't match with the category mapping in display
+
+Changes:
+
++ display.py file
+As we agreed in the meeting I changed the class MenuDisplay
+The category_menu_items is change and accordingly the category_mapping to translate user input
++ app.py file
+I created the abstract class CategoryParams and all the inherit classes according to each option.
+To do so, I used the abc library
+I changed  the find_recipe_instructions to use the abstract class
+Also I edited the common params to erase type, add random sort and ignore pantry

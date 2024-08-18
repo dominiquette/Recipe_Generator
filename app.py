@@ -1,5 +1,6 @@
 # ===== Importing Libraries ===========
 import requests
+from abc import abstractmethod
 
 # ===== Importing data from files ===========
 from config import api_key
@@ -36,7 +37,7 @@ class RecipeFinder:
         endpoint = "recipes/findByIngredients"
         params = {
             "ingredients": ingredients,
-            "number": 10,  # Number of recipes to return
+            "number": 3,  # Number of recipes to return
             "ranking": 2,  # Minimises missing ingredients
             "apiKey": self.api.api_key,  # Uses the API key from the API instance
             "ignorePantry": "true"  # Ignore typical pantry items
@@ -50,29 +51,18 @@ class RecipeFinder:
     @handle_errors
     def find_recipes_by_category(self, category):
         endpoint = "recipes/complexSearch"
-        params = {
-            "type": category,
-            "number": 10,
-            "apiKey": self.api.api_key
+        common_params = {
+            "number": 3,
+            "apiKey": self.api.api_key,
+            "sort": "random",  # to show different results each time
+            "ignorePantry": "true"  # Ignore typical pantry items
         }
-        if category in ["vegan", "vegetarian", "gluten free", "ketogenic"]:
-            params["diet"] = category  # Set diet parameter for specific diets
-        elif category == "fish":
-            params["includeIngredients"] = "fish"
-        elif category == "chicken":
-            params["includeIngredients"] = "chicken"
-        elif category == "beef":
-            params["includeIngredients"] = "beef"
-        elif category == "lamb":
-            params["includeIngredients"] = "lamb"
-        elif category == "pork":
-            params["includeIngredients"] = "pork"
-        elif category == "duck":
-            params["includeIngredients"] = "duck"
-        elif category == "dessert":
-            params["type"] = "dessert"
-        elif category == "salad":
-            params["type"] = "salad"
+        # interface segregation of categories in different classes
+        get_categories = CategoryMapping.get_category(category)
+        if get_categories:
+            params = get_categories.set_params(common_params)
+        else:
+            params = common_params
 
         response = self.api.make_request(endpoint, params=params)
         if not response:
@@ -96,7 +86,7 @@ class RecipeFinder:
     def find_random_recipes(self):
         endpoint = "recipes/random"
         params = {
-            "number": 10,
+            "number": 3,
             "apiKey": self.api.api_key  # Uses the API key from the API instance
         }
         response = self.api.make_request(endpoint, params=params)
@@ -105,3 +95,75 @@ class RecipeFinder:
         else:
             print("Unexpected response format:", response)  # Resolves unexpected response formats
             return []
+
+
+# a class to handle the categories search, we could easily add or remove categories
+class CategoryParams:
+    @abstractmethod
+    def set_params(self, common_params):
+        pass
+
+
+class SnacksOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["type"] = "snack"
+        common_params["maxReadyTime"] = 15
+        return common_params
+
+
+class VegOption(CategoryParams):
+    def set_params(self, common_params):
+        # the pipe means recipes that are vegan OR vegetarian
+        common_params["diet"] = "vegan|vegetarian"
+        return common_params
+
+
+class FishOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["includeIngredients"] = "fish"
+        return common_params
+
+
+class ChickenOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["includeIngredients"] = "chicken"
+        return common_params
+
+
+class BeefOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["includeIngredients"] = "beef"
+        return common_params
+
+
+class LambOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["includeIngredients"] = "lamb"
+        return common_params
+
+
+class PorkOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["includeIngredients"] = "pork"
+        return common_params
+
+
+class DessertOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["type"] = "dessert"
+        return common_params
+
+
+class CategoryMapping:
+    def get_category(category):
+        categories = {
+            "snacks": SnacksOption(),
+            "veg": VegOption(),
+            "fish": FishOption(),
+            "chicken": ChickenOption(),
+            "beef": BeefOption(),
+            "lamb": LambOption(),
+            "pork": PorkOption(),
+            "dessert": DessertOption(),
+        }
+        return categories.get(category, None)
