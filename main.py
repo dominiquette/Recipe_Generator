@@ -5,6 +5,7 @@ from recipe_saver import SaveRecipe
 from app import RecipeFinder, SpoonacularAPI
 from config import api_key
 from decorators import log_function_call, handle_errors  # Import the decorators
+from output import RecipeExporter, RecipeDetails, RecipeProcessor
 
 
 # App class is the main application class, handles running the application
@@ -25,10 +26,14 @@ class App:
         api = SpoonacularAPI("https://api.spoonacular.com", api_key)
         # Creates an instance of the RecipeFinder class, passing the api instance
         self.get_recipe = RecipeFinder(api)
+        # Creates an instance of the RecipeDetails class, passing the get_recipe instance
+        self.recipe_details = RecipeDetails(self.get_recipe)
         # Creates an instance of the Recipe class, passing the get_recipe instance
         self.show_recipe = RecipeDisplay(self.get_recipe)
         # Creates an instance of the SaveRecipe class
         self.saved_recipes = SaveRecipe()
+        # Creates an instance of RecipeExporter class
+        self.recipe_exporter = RecipeExporter(self.recipe_details, RecipeProcessor, self.saved_recipes)
 
     # Method that runs the application
     @log_function_call  # Log when the run method starts and ends
@@ -90,7 +95,11 @@ class App:
                     # Calls the display_saved_recipes function and passing the get_saved_recipes function as an argument
                     self.show_recipe.display_saved_recipes(self.saved_recipes.get_saved_recipes())
 
+                # Calls the export_to_excel function from recipe_exporter class
                 elif choice == '5':
+                    self.recipe_exporter.export_to_excel('saved_recipes.xlsx')
+
+                elif choice == '6':
                     print("Thank you for using our recipe app, goodbye!")
                     exit()  # Terminates the program execution
 

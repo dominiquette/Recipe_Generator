@@ -13,7 +13,8 @@ class MenuDisplay:
             "[2] Get random recipes",
             "[3] View recipe categories",
             "[4] View your saved recipes",
-            "[5] Exit"
+            "[5] Export saved recipes to Excel",
+            "[6] Exit"
         ]
         # Creates an instance of category menu items
         self.category_menu_items = [
@@ -61,8 +62,8 @@ class MenuDisplay:
 # Recipe class handles getting the list of ingredients and displaying it
 # Interacts with the RecipeFinder to get the recipes from the API
 class RecipeDisplay:
-    def __init__(self, get):
-        self.get = get
+    def __init__(self, get_recipe):
+        self.get_recipe = get_recipe
 
     @log_function_call
     @handle_errors
@@ -90,7 +91,7 @@ class RecipeDisplay:
                     print(f" - {ingredient}")
 
             # Fetch and display recipe instructions and ingredients
-            recipe_info = self.get.find_recipe_instructions(recipe['id'])
+            recipe_info = self.get_recipe.find_recipe_details(recipe['id'])
             extended_ingredients = recipe_info.get('extendedIngredients', [])
             if extended_ingredients:
                 # Print the list of all ingredients needed for the recipe

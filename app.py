@@ -33,10 +33,11 @@ class RecipeFinder:
     @log_function_call
     @handle_errors
     def find_recipes_by_ingredients(self, ingredients):
+
         endpoint = "recipes/findByIngredients"
         params = {
             "ingredients": ingredients,
-            "number": 10,  # Number of recipes to return
+            "number": 2,  # Number of recipes to return
             "ranking": 2,  # Minimises missing ingredients
             "apiKey": self.api.api_key,  # Uses the API key from the API instance
             "ignorePantry": "true"  # Ignore typical pantry items
@@ -81,7 +82,7 @@ class RecipeFinder:
 
     @log_function_call
     @handle_errors
-    def find_recipe_instructions(self, recipe_id):
+    def find_recipe_details(self, recipe_id):
         endpoint = f"recipes/{recipe_id}/information"
         params = {
             "apiKey": self.api.api_key  # Uses the API key from the API instance
@@ -91,12 +92,28 @@ class RecipeFinder:
             raise ValueError("API response is empty or invalid.")  # # ValueError for empty or invalid responses
         return response
 
+# Function that searches a recipe by title and return the ID
+    @log_function_call
+    @handle_errors
+    def find_recipe_id(self, recipe_title):
+        endpoint = "recipes/complexSearch"
+        params = {
+            "query": recipe_title,
+            "apiKey": self.api.api_key
+        }
+        response = self.api.make_request(endpoint, params=params)
+        if not response:
+            print(f"No recipes found for title '{recipe_title}'")
+            return None
+
+        return response['results'][0]['id']
+
     @log_function_call
     @handle_errors
     def find_random_recipes(self):
         endpoint = "recipes/random"
         params = {
-            "number": 10,
+            "number": 1,
             "apiKey": self.api.api_key  # Uses the API key from the API instance
         }
         response = self.api.make_request(endpoint, params=params)
