@@ -67,7 +67,7 @@ class TestRecipeDisplay(unittest.TestCase):
         self.assertIn("No instructions available.", output)
 
     @patch('sys.stdout', new_callable=StringIO)
-    def test_display_saved_recipes(self, mock_stdout): # FAILED
+    def test_display_saved_recipes(self, mock_stdout):
         saved_recipes = {
             'dessert': ['Chocolate Cake', 'Ice Cream'],
             'snacks': ['Nachos', 'Popcorn']
@@ -103,7 +103,7 @@ class TestMenuDisplay(unittest.TestCase):
     def setUp(self):
         self.menu = MenuDisplay()
 
-    def test_display_menu(self):  # PASSED
+    def test_display_menu(self):
         with patch('sys.stdout', new=StringIO()) as fake_out:
             self.menu.display_menu(self.menu.main_menu_items, "Main Menu")
             output = fake_out.getvalue()
