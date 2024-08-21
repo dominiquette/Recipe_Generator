@@ -1,17 +1,17 @@
 import unittest
 from unittest.mock import patch, Mock
 import requests
+
 from app import SpoonacularAPI, RecipeFinder
 
 
-# I tried to test this class, but I don't know how to do it without giving params and endpoint.
-# I searched online and with IA tried to adapt this but even though is "working" is not doing what I want to.
-
+# Test class for the SpoonacularAPI class
 class TestSpoonacularAPI(unittest.TestCase):  # passed 2 OUT OF 3
 
-    def setUp(self):  # Initialize the SpoonacularAPI instance correctly
+    def setUp(self):  # Initialise the SpoonacularAPI instance correctly
         self.api = SpoonacularAPI(base_url="https://api.spoonacular.com", api_key="test_api_key")
 
+    # Test for successful API request
     @patch('app.requests.get')
     def test_make_request_success(self, mock_get):
         # Mock the response object to simulate a successful request with a JSON dictionary
@@ -30,6 +30,7 @@ class TestSpoonacularAPI(unittest.TestCase):  # passed 2 OUT OF 3
             params={"param1": "value1"}
         )
 
+    # Test for handling HTTP error response
     @patch('app.requests.get')
     def test_make_request_http_error(self, mock_get):
         # Mock the response object to simulate an HTTP error
@@ -40,9 +41,11 @@ class TestSpoonacularAPI(unittest.TestCase):  # passed 2 OUT OF 3
 
         result = self.api.make_request("test_endpoint")
 
+        # This ensures that the correct endpoint was called
         mock_get.assert_called_once_with("https://api.spoonacular.com/test_endpoint", params=None)
         self.assertIsNone(result)
 
+    # Test for handling general request exceptions such as connection errors
     @patch('app.requests.get')
     def test_make_request_request_exception(self, mock_get):
         # Mock the requests.get to raise a RequestException
@@ -50,21 +53,27 @@ class TestSpoonacularAPI(unittest.TestCase):  # passed 2 OUT OF 3
 
         result = self.api.make_request("test_endpoint")
 
+        # Ensure that the correct endpoint was called
         mock_get.assert_called_once_with("https://api.spoonacular.com/test_endpoint", params=None)
         self.assertIsNone(result)
 
 
+# Test class for the RecipeFinder class
 class TestRecipeFinder(unittest.TestCase):  # passed 6 out of 8
     def setUp(self):
+        # Initialise the SpoonacularAPI and RecipeFinder instances
         self.api = SpoonacularAPI(base_url="https://api.spoonacular.com", api_key="test_api_key")
         self.recipe_finder = RecipeFinder(self.api)
 
+    # Test for finding recipes by ingredients successfully
     @patch('app.SpoonacularAPI.make_request')
     def test_find_recipes_by_ingredients_success(self, mock_make_request):
+        # Mock the API response to return a list of recipes
         mock_make_request.return_value = [{"id": 1, "title": "Test Recipe"}]
 
         result = self.recipe_finder.find_recipes_by_ingredients("tomato, cheese")
 
+        # Ensure that the API was called with the correct endpoint and parameters
         mock_make_request.assert_called_once_with(
             "recipes/findByIngredients",
             params={
@@ -75,14 +84,17 @@ class TestRecipeFinder(unittest.TestCase):  # passed 6 out of 8
                 "ignorePantry": "true"
             }
         )
-        self.assertEqual(result, [{"id": 1, "title": "Test Recipe"}])
+        self.assertEqual(result, [{"id": 1, "title": "Test Recipe"}])  # Confirm the correct recipe was returned
 
+    # Test for handling an empty response when finding recipes by ingredients
     @patch('app.SpoonacularAPI.make_request')
     def test_find_recipes_by_ingredients_empty_response(self, mock_make_request):
+        # Mock the API response to return an empty list
         mock_make_request.return_value = []
 
         result = self.recipe_finder.find_recipes_by_ingredients("tomato, cheese")
 
+        # Ensure that the API was called with the correct endpoint and parameters
         mock_make_request.assert_called_once_with(
             "recipes/findByIngredients",
             params={
@@ -93,14 +105,17 @@ class TestRecipeFinder(unittest.TestCase):  # passed 6 out of 8
                 "ignorePantry": "true"
             }
         )
-        self.assertIsNone(result)
+        self.assertIsNone(result)  # Confirm that None was returned due to the empty response
 
+    # Test for successfully finding recipes by category
     @patch('app.SpoonacularAPI.make_request')
     def test_find_recipes_by_category_success(self, mock_make_request):
+        # Mock the API response to return a list of recipes
         mock_make_request.return_value = {"results": [{"id": 1, "title": "Test Recipe"}]}
 
         result = self.recipe_finder.find_recipes_by_category("chicken")
 
+        # Ensure that the API was called with the correct endpoint and parameters
         mock_make_request.assert_called_once_with(
             "recipes/complexSearch",
             params={
@@ -111,14 +126,18 @@ class TestRecipeFinder(unittest.TestCase):  # passed 6 out of 8
                 "includeIngredients": "chicken"
             }
         )
+        # Confirm that the correct recipe was returned
         self.assertEqual(result, [{"id": 1, "title": "Test Recipe"}])
 
+    # Test for handling an empty response when finding recipes by category
     @patch('app.SpoonacularAPI.make_request')
     def test_find_recipes_by_category_empty_response(self, mock_make_request):
+        # Mock the API response to return an empty dictionary
         mock_make_request.return_value = {}
 
         result = self.recipe_finder.find_recipes_by_category("chicken")
 
+        # Ensure that the API was called with the correct endpoint and parameters
         mock_make_request.assert_called_once_with(
             "recipes/complexSearch",
             params={
@@ -129,42 +148,53 @@ class TestRecipeFinder(unittest.TestCase):  # passed 6 out of 8
                 "includeIngredients": "chicken"
             }
         )
-        self.assertEqual(result, [])
+        self.assertEqual(result, [])  # Confirm that an empty list was returned due to the empty response
 
+    # Test for successfully retrieving recipe instructions
     @patch('app.SpoonacularAPI.make_request')
     def test_find_recipe_instructions_success(self, mock_make_request):
+        # Mock the API response to return a recipe's instructions
         mock_make_request.return_value = {"id": 1, "instructions": "Test instructions"}
 
         result = self.recipe_finder.find_recipe_instructions(1)
 
+        # Ensure that the API was called with the correct endpoint and parameters
         mock_make_request.assert_called_once_with(
             "recipes/1/information",
             params={
                 "apiKey": "test_api_key"
             }
         )
-        self.assertEqual(result, {"id": 1, "instructions": "Test instructions"})
+        # Confirm that the correct instructions were returned
+        self.assertEqual(result, {"id": 1,
+                                  "instructions": "Test instructions"})
 
+    # Test for handling an empty response when retrieving recipe instructions
     @patch('app.SpoonacularAPI.make_request')
     def test_find_recipe_instructions_empty_response(self, mock_make_request):
+        # Mock the API response to return None
         mock_make_request.return_value = None
 
         result = self.recipe_finder.find_recipe_instructions(1)
 
+        # Ensure that the API was called with the correct endpoint and parameters
         mock_make_request.assert_called_once_with(
             "recipes/1/information",
             params={
                 "apiKey": "test_api_key"
             }
         )
-        self.assertIsNone(result)
+        self.assertIsNone(result)  # Confirm that None was returned due to the empty response
 
+    # Test for successfully finding random recipes
     @patch('app.SpoonacularAPI.make_request')
     def test_find_random_recipes_success(self, mock_make_request):
+        # Mock the API response to return a list of random recipes
         mock_make_request.return_value = {"recipes": [{"id": 1, "title": "Test Recipe"}]}
 
         result = self.recipe_finder.find_random_recipes()
 
+        # Ensure that the API was called with the correct endpoint and parameters
         mock_make_request.assert_called_once_with(
             "recipes/random",
             params={
@@ -172,10 +202,13 @@ class TestRecipeFinder(unittest.TestCase):  # passed 6 out of 8
                 "apiKey": "test_api_key"
             }
         )
+        # Confirm the correct random recipe was returned
         self.assertEqual(result, [{"id": 1, "title": "Test Recipe"}])
 
+    # Test for handling an empty response when finding random recipes
     @patch('app.SpoonacularAPI.make_request')
     def test_find_random_recipes_empty_response(self, mock_make_request):
+        # Mock the API response to return an empty dictionary
         mock_make_request.return_value = {}
 
         # Call the method and check the results
@@ -183,6 +216,7 @@ class TestRecipeFinder(unittest.TestCase):  # passed 6 out of 8
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0]['title'], "Recipe X")
 
+        # Ensure that the API was called with the correct endpoint and parameters
         # Below is the code to check the endpoint AND params
         # Researched online to reduce it in one check
         # There are called_once and called_once_with https://docs.python.org/3/library/unittest.mock.html
@@ -193,7 +227,7 @@ class TestRecipeFinder(unittest.TestCase):  # passed 6 out of 8
                 "apiKey": "test_api_key"
             }
         )
-        self.assertEqual(result, [])
+        self.assertEqual(result, [])  # Confirm that an empty list was returned due to the empty response
 
 
 if __name__ == "__main__":

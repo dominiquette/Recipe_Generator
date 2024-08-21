@@ -3,7 +3,7 @@ from unittest.mock import patch
 from main import App  # Import the App class from the main module
 
 
-class TestMain(unittest.TestCase):  # passed 1 out of 2
+class TestMain(unittest.TestCase):
 
     @patch('app.SpoonacularAPI.make_request')
     @patch('builtins.input', side_effect=['1', 'tomato,cheese', 'N', '5'])

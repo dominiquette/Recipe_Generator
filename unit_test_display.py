@@ -5,18 +5,11 @@ from display import RecipeDisplay, MenuDisplay
 from user_input import UserInput
 
 
-class TestRecipeDisplay(unittest.TestCase):  # PASSED 3 OUT OF 4
+class TestRecipeDisplay(unittest.TestCase):
 
     def setUp(self):
         self.get_mock = Mock()  # Mocking the get object that would normally fetch recipe instructions
         self.recipe_display = RecipeDisplay(get=self.get_mock)
-
-    #     @patch('builtins.input', return_value='rice')
-    #     def test_get_user_ingredients_successfully_parses_input(self, mock_input):  # PASSED
-    #         recipe_display = RecipeDisplay(get=None)
-    #         result = recipe_display.get_user_ingredients()
-    #         self.assertEqual(result, ['rice'])  # Check if the input is correctly parsed
-    #
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_display_recipes_with_ingredients(self, mock_stdout):
@@ -105,7 +98,7 @@ class TestRecipeDisplay(unittest.TestCase):  # PASSED 3 OUT OF 4
         self.assertIn("No saved recipes.", output)
 
 
-class TestMenuDisplay(unittest.TestCase):  # PASSED 1 out of 1 test
+class TestMenuDisplay(unittest.TestCase):
 
     def setUp(self):
         self.menu = MenuDisplay()
@@ -119,16 +112,6 @@ class TestMenuDisplay(unittest.TestCase):  # PASSED 1 out of 1 test
         self.assertIn("Main Menu", output)
         for item in self.menu.main_menu_items:
             self.assertIn(item, output)
-
-    # @patch('builtins.input', return_value='1')
-    # def test_get_choice_success(self, mock_input):
-    #     choice = self.menu.get_choice("Please choose:")
-    #     self.assertEqual(choice, '1')
-
-    # @patch('builtins.input', side_effect=['', '1'])
-    # def test_get_choice_empty_input(self, mock_input):
-    #     choice = self.menu.get_choice("Please choose:")
-    #     self.assertEqual(choice, '1')  # Ensure it returns the valid input after retry
 
 
 if __name__ == '__main__':
