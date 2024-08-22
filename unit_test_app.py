@@ -59,7 +59,7 @@ class TestSpoonacularAPI(unittest.TestCase):
 
 
 # Test class for the RecipeFinder class
-class TestRecipeFinder(unittest.TestCase):  
+class TestRecipeFinder(unittest.TestCase):
     def setUp(self):
         # Initialise the SpoonacularAPI and RecipeFinder instances
         self.api = SpoonacularAPI(base_url="https://api.spoonacular.com", api_key="test_api_key")
