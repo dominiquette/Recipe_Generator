@@ -42,6 +42,8 @@ class MenuDisplay:
     @log_function_call
     @handle_errors
     def display_menu(self, menu_items, title):
+        if title is None:
+            title = ""
         # Define the width of the box, including borders
         width = 44
 

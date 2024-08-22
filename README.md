@@ -59,3 +59,46 @@ I created the abstract class CategoryParams and all the inherit classes accordin
 To do so, I used the abc library
 I changed  the find_recipe_instructions to use the abstract class
 Also I edited the common params to erase type, add random sort and ignore pantry
+## Unit testing first draft
+13/08
++ General commments:
+I used all I have to do it. sessions, code from the sessions, google, IA  
+To summarize I used the file test_unit_test_example from Sophia's lesson about unit test  
+However, we didn't cover in class how to unit test with classes So you we'll see comments about:
+    + setUp: is like our class _init_ not the same but just to give you an idea
+    + I tried to explain assert_called_with and patch inside the unit_test_app
+    + useful links: 
+https://docs.python.org/es/3.10/library/unittest.mock.html
+https://docs.python.org/3/library/unittest.mock.html#patch
+https://www.geeksforgeeks.org/python-unittest-assertin-function/
+
+Furthermore, I think we need to ask how much is expected from us, because there are a million things to test.  
+I don't know if it is necessary a unit test function for each function or only the app.py functions
+I created to files regarding some functions in the app file and display file - 
+We need to decide if it is better to divide them by classes depending on how many lines of code we will have.
+
++ unit_test_app: One function working and ideas
+    + class TestSpoonacularAPI:
+I wanted to test this class to check if the json response is a dict,
+but I don't know how to do it without giving params and endpoint. 
+I commented the code but I leave it first in case someone know how to do it
+    + the function test_random_recipes_number:
+we only test what happen test what happen if for some reason the response exceeded the params number: 2
+I hope we could use the structure to test more things but I don't know what else test from this function
+  
++ unit_test_display: This file only have ideas, I wish I have more time
+    + I did a test that one only compares the input from the get_user_ingredients with some expected,
+I don't think we can add this is not testing the function, only the input
+That's why I wanted to test the ValueError
+    +  I wanted to add something related to this ValueError, but I can't.
+Also, I couldn't find a way for the app to give me this error. 
+Hafsa I don't know what I'm doing wrong or maybe we need a redo
+It jumps to a ValueError("API response is empty or invalid.") 
+Here's an example 
+![image](https://github.com/user-attachments/assets/6ddb5d2c-e2d5-40b1-bcdc-a0de09d0b000)
+
+    + Last, I want to add something related to assertIn to check if the ingredient was in the app response to combine
+display and app test, but it was too hard for me
+
+
+

@@ -21,7 +21,10 @@ class SpoonacularAPI:
     def make_request(self, endpoint, params=None):
         url = f'{self.base_url}/{endpoint}'
         response = requests.get(url, params=params)
-        response.raise_for_status()  # # Raises an exception for HTTP errors
+        response.raise_for_status()  # Raises an exception for HTTP errors
+        return response.json()
+        response = requests.get(url, params=params)
+        response.raise_for_status()  # Raises an exception for HTTP errors
         return response.json()
 
 
