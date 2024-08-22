@@ -19,31 +19,33 @@ class MenuDisplay:
         ]
         # Creates an instance of category menu items
         self.category_menu_items = [
-            "[1] Vegan Recipes",
-            "[2] Vegetarian Recipes",
-            "[3] Gluten-Free Recipes",
-            "[4] Fish Recipes",
-            "[5] Meat Recipes",
-            "[6] Desserts",
-            "[7] Healthy Snacks",
-            "[8] Raw Fruit and Veg Recipes",
+            "[1] Quick Snacks Recipes",
+            "[2] Vegan or Vegetarian Recipes",
+            "[3] Fish Recipes",
+            "[4] Chicken Recipes",
+            "[5] Beef Recipes",
+            "[6] Lamb Recipes",
+            "[7] Pork Recipes",
+            "[8] Dessert Recipes",
             "[9] Back to Main Menu"
         ]
         # Creates an instance of category mapping
         self.category_mapping = {
-            '1': 'vegan',
-            '2': 'vegetarian',
-            '3': 'gluten free',
-            '4': 'fish',
-            '5': 'meat',
-            '6': 'dessert',
-            '7': 'healthy',
-            '8': 'raw'
+            '1': 'snacks',
+            '2': 'veg',
+            '3': 'fish',
+            '4': 'chicken',
+            '5': 'beef',
+            '6': 'lamb',
+            '7': 'pork',
+            '8': 'dessert'
         }
 
     @log_function_call
     @handle_errors
     def display_menu(self, menu_items, title):
+        if title is None:
+            title = ""
         # Define the width of the box, including borders
         width = 44
 

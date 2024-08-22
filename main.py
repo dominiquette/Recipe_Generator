@@ -17,7 +17,7 @@ class App:
         # Initialise a welcome message as a string
         self.welcome_message = f"""
         ·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚‧₊⁺⁺₊‧˚·͙ ‧₊⁺⁺
-        🧄🍲🍎 Welcome {self.user.name}, to Group 5 Recipe generator 🍉🍰🥕 
+        🧄🍲🍎 Welcome {self.user.name}, to Group 5 Recipe Generator 🍉🍰🥕 
         ·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚ ‧₊⁺⁺₊‧˚·͙ ‧₊⁺⁺
         """
         # Creates an instance of the Menu class

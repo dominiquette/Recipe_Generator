@@ -44,7 +44,7 @@ def handle_errors(func):
     occur during execution. It is particularly useful for handling user input errors in a
     console application, where the program should not crash due to invalid input.
 
-    - If a `ValueError` is raised and it's related to empty input, the decorator will prompt the user
+    - If a `ValueError` is raised, and it's related to empty input, the decorator will prompt the user
       to re-enter the input by continuing the loop.
     - For `HTTPError` related to missing or invalid API keys, a specific error message will be shown.
     - For any other exceptions, the error is printed, and the function returns `None` to signal failure.
@@ -70,8 +70,8 @@ def handle_errors(func):
                 return None
             except requests.exceptions.HTTPError as e:
                 # Handle HTTP errors, especially for missing or invalid API keys
-                if e.response.status_code == 401:
-                    print("\nError!: No API key found or invalid API key. Please check if API key is entered correctly.")
+                if e.response is not None and e.response.status_code == 401:
+                    print("\nError!: No API key found or invalid API key. Check if API key is entered correctly")
                 else:
                     print(f"HTTP Error: {e}")
                 return None

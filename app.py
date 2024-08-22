@@ -1,5 +1,6 @@
 # ===== Importing Libraries ===========
 import requests
+from abc import abstractmethod
 
 # ===== Importing data from files ===========
 from config import api_key
@@ -20,7 +21,7 @@ class SpoonacularAPI:
     def make_request(self, endpoint, params=None):
         url = f'{self.base_url}/{endpoint}'
         response = requests.get(url, params=params)
-        response.raise_for_status()  # # Raises an exception for HTTP errors
+        response.raise_for_status()  # Raises an exception for HTTP errors
         return response.json()
 
 
@@ -51,29 +52,18 @@ class RecipeFinder:
     @handle_errors
     def find_recipes_by_category(self, category):
         endpoint = "recipes/complexSearch"
-        params = {
-            "type": category,
+        common_params = {
             "number": 10,
-            "apiKey": self.api.api_key
+            "apiKey": self.api.api_key,
+            "sort": "random",  # to show different results each time
+            "ignorePantry": "true"  # Ignore typical pantry items
         }
-        if category in ["vegan", "vegetarian", "gluten free", "ketogenic"]:
-            params["diet"] = category  # Set diet parameter for specific diets
-        elif category == "fish":
-            params["includeIngredients"] = "fish"
-        elif category == "chicken":
-            params["includeIngredients"] = "chicken"
-        elif category == "beef":
-            params["includeIngredients"] = "beef"
-        elif category == "lamb":
-            params["includeIngredients"] = "lamb"
-        elif category == "pork":
-            params["includeIngredients"] = "pork"
-        elif category == "duck":
-            params["includeIngredients"] = "duck"
-        elif category == "dessert":
-            params["type"] = "dessert"
-        elif category == "salad":
-            params["type"] = "salad"
+        # interface segregation of categories in different classes
+        get_categories = CategoryMapping.get_category(category)
+        if get_categories:
+            params = get_categories.set_params(common_params)
+        else:
+            params = common_params
 
         response = self.api.make_request(endpoint, params=params)
         if not response:
@@ -165,3 +155,75 @@ class RecipeDetails:
             print("No instructions found in the API response.")
 
         return ingredients, instructions
+
+
+# a class to handle the categories search, we could easily add or remove categories
+class CategoryParams:
+    @abstractmethod
+    def set_params(self, common_params):
+        pass
+
+
+class SnacksOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["type"] = "snack"
+        common_params["maxReadyTime"] = 15
+        return common_params
+
+
+class VegOption(CategoryParams):
+    def set_params(self, common_params):
+        # the pipe means recipes that are vegan OR vegetarian
+        common_params["diet"] = "vegan|vegetarian"
+        return common_params
+
+
+class FishOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["includeIngredients"] = "fish"
+        return common_params
+
+
+class ChickenOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["includeIngredients"] = "chicken"
+        return common_params
+
+
+class BeefOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["includeIngredients"] = "beef"
+        return common_params
+
+
+class LambOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["includeIngredients"] = "lamb"
+        return common_params
+
+
+class PorkOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["includeIngredients"] = "pork"
+        return common_params
+
+
+class DessertOption(CategoryParams):
+    def set_params(self, common_params):
+        common_params["type"] = "dessert"
+        return common_params
+
+
+class CategoryMapping:
+    def get_category(category):
+        categories = {
+            "snacks": SnacksOption(),
+            "veg": VegOption(),
+            "fish": FishOption(),
+            "chicken": ChickenOption(),
+            "beef": BeefOption(),
+            "lamb": LambOption(),
+            "pork": PorkOption(),
+            "dessert": DessertOption(),
+        }
+        return categories.get(category, None)
