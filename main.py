@@ -35,9 +35,9 @@ class App:
         # Creates an instance of RecipeExporter class, passing recipe_details and saved_recipes instances
         self.recipe_exporter = RecipeExporter(self.recipe_details, self.saved_recipes)
 
-    # Method that runs the application
-    @log_function_call  # Log when the run method starts and ends
-    @handle_errors  # Handle any exceptions uniformly
+    # Method that runs the application, decorated with logging and error handling
+    @log_function_call
+    @handle_errors
     def run(self):
         print(self.welcome_message)
         # Starts an infinite loop for the main menu that will run until you explicitly exit the programme

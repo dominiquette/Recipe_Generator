@@ -1,14 +1,18 @@
 # ===== Importing Libraries ===========
+# Importing deque for queue operations and defaultdict for dictionaries with default values
 from collections import deque, defaultdict
-# ===== Importing data from files ===========
+
+# ===== Importing methods from files ===========
 from decorators import log_function_call, handle_errors
 
 
+# SaveRecipe class handles saving recipes under different categories
 class SaveRecipe:
     def __init__(self):
-        # Initializes an empty dictionary where the value will be a list of recipe names and the key is the category
+        # Initialises an empty dictionary where the value will be a list of recipe names and the key is the category
         self.saved_recipes = defaultdict(deque)
 
+    # Method to save selected recipes, decorated with logging and error handling
     @log_function_call
     @handle_errors
     def save_recipes(self, recipe_names, category):
@@ -35,8 +39,9 @@ class SaveRecipe:
         # Prints a success message when recipe is saved
         print("\nRecipes saved successfully!")
 
+    # Method to retrieves the saved recipes dictionary, decorated with logging and error handling
     @log_function_call
     @handle_errors
     def get_saved_recipes(self):
-        # Returns saved recipes dict
+        # Returns the saved_recipes dictionary as a regular dict (not defaultdict)
         return dict(self.saved_recipes)
