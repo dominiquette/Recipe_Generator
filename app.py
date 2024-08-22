@@ -37,7 +37,7 @@ class RecipeFinder:
         endpoint = "recipes/findByIngredients"
         params = {
             "ingredients": ingredients,
-            "number": 2,  # Number of recipes to return
+            "number": 10,  # Number of recipes to return
             "ranking": 2,  # Minimises missing ingredients
             "apiKey": self.api.api_key,  # Uses the API key from the API instance
             "ignorePantry": "true"  # Ignore typical pantry items
@@ -82,6 +82,21 @@ class RecipeFinder:
 
     @log_function_call
     @handle_errors
+    def find_random_recipes(self):
+        endpoint = "recipes/random"
+        params = {
+            "number": 10,
+            "apiKey": self.api.api_key  # Uses the API key from the API instance
+        }
+        response = self.api.make_request(endpoint, params=params)
+        if "recipes" in response:
+            return response["recipes"]
+        else:
+            print("Unexpected response format:", response)  # Resolves unexpected response formats
+            return []
+
+    @log_function_call
+    @handle_errors
     def find_recipe_details(self, recipe_id):
         endpoint = f"recipes/{recipe_id}/information"
         params = {
@@ -92,7 +107,14 @@ class RecipeFinder:
             raise ValueError("API response is empty or invalid.")  # # ValueError for empty or invalid responses
         return response
 
-# Function that searches a recipe by title and return the ID
+
+class RecipeDetails:
+    def __init__(self, api, get_recipe):
+        # Creates an instance of the API
+        self.api = api
+        self.get_recipe = get_recipe
+
+    # Function that searches a recipe by title and return the ID
     @log_function_call
     @handle_errors
     def find_recipe_id(self, recipe_title):
@@ -110,15 +132,36 @@ class RecipeFinder:
 
     @log_function_call
     @handle_errors
-    def find_random_recipes(self):
-        endpoint = "recipes/random"
-        params = {
-            "number": 1,
-            "apiKey": self.api.api_key  # Uses the API key from the API instance
-        }
-        response = self.api.make_request(endpoint, params=params)
-        if "recipes" in response:
-            return response["recipes"]
+    def find_instructions_ingredients(self, recipe_title):
+        # Find the recipe ID
+        recipe_id = self.find_recipe_id(recipe_title)
+        if not recipe_id:
+            raise ValueError(f'No ID found for {recipe_title}')
+
+        # Get information of the recipe from find_recipe_details method
+        api_response = self.get_recipe.find_recipe_details(recipe_id)
+        if not api_response:
+            raise ValueError(f'No response from API for recipe ID: {recipe_id}')
+
+        # Extract and format ingredients
+        if 'extendedIngredients' in api_response:
+            ingredients_list = []
+            for ingredient in api_response['extendedIngredients']:
+                name = ingredient.get('name', 'Unknown')
+                amount = ingredient.get('amount', '')
+                unit = ingredient.get('measures', {}).get('us', {}).get('unitShort', '')
+                ingredients_list.append(f"{amount} {unit} {name}")
+            ingredients = ", ".join(ingredients_list)
         else:
-            print("Unexpected response format:", response)  # Resolves unexpected response formats
-            return []
+            ingredients = None
+            print("No ingredients found in the API response.")
+
+        # Extract and format instructions
+        if 'analyzedInstructions' in api_response and api_response['analyzedInstructions']:
+            instructions_steps = api_response['analyzedInstructions'][0]['steps']
+            instructions = "\n".join([f"Step {step['number']}: {step['step']}" for step in instructions_steps])
+        else:
+            instructions = None
+            print("No instructions found in the API response.")
+
+        return ingredients, instructions

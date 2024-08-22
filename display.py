@@ -3,6 +3,7 @@ from decorators import log_function_call, handle_errors
 
 
 # ===== Menu class handles displaying menu options ===========
+
 # Menu class that handles displaying and managing the menu options
 class MenuDisplay:
     def __init__(self):
