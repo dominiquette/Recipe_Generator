@@ -1,8 +1,8 @@
 # ===== Spoonacular API Configuration ==========
 
 # spoonacular API key
-api_key = 'your-api-key-here'
-
+# api_key = 'your-api-key-here'
+api_key = 'dad16cb84e574c3793def646cf70d151'
 # ===== Logging Configuration ==========
 
 # Control the logging behavior of the application

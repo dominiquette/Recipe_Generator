@@ -80,9 +80,10 @@ class TestRecipeDisplay(unittest.TestCase):
         output = mock_stdout.getvalue()
 
         # Check if the output contains the expected strings
-        self.assertIn("Here are your saved recipes:", output)
-        self.assertIn(" - Saved Recipes by dessert: Chocolate Cake, Ice Cream", output)
-        self.assertIn(" - Saved Recipes by snacks: Nachos, Popcorn", output)
+        self.assertIn("\n\33[33m\33[40m\33[1mHere are your saved recipes:\33[0m", output)
+        self.assertIn("\33[1m - Saved Recipes by dessert:\33[0m Chocolate Cake, Ice Cream", output)
+        self.assertIn("\33[1m - Saved Recipes by snacks:\33[0m Nachos, Popcorn", output)
+        self.assertIn('-' * 100, output)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_display_saved_recipes_empty(self, mock_stdout):
