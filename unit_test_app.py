@@ -156,7 +156,7 @@ class TestRecipeFinder(unittest.TestCase):
         # Mock the API response to return a recipe's instructions
         mock_make_request.return_value = {"id": 1, "instructions": "Test instructions"}
 
-        result = self.recipe_finder.find_recipe_instructions(1)
+        result = self.recipe_finder.find_recipe_details(1)
 
         # Ensure that the API was called with the correct endpoint and parameters
         mock_make_request.assert_called_once_with(
@@ -175,7 +175,7 @@ class TestRecipeFinder(unittest.TestCase):
         # Mock the API response to return None
         mock_make_request.return_value = None
 
-        result = self.recipe_finder.find_recipe_instructions(1)
+        result = self.recipe_finder.find_recipe_details(1)
 
         # Ensure that the API was called with the correct endpoint and parameters
         mock_make_request.assert_called_once_with(

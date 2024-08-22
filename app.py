@@ -38,7 +38,7 @@ class RecipeFinder:
         endpoint = "recipes/findByIngredients"
         params = {
             "ingredients": ingredients,
-            "number": 10,  # Number of recipes to return
+            "number": 3,  # Number of recipes to return
             "ranking": 2,  # Minimises missing ingredients
             "apiKey": self.api.api_key,  # Uses the API key from the API instance
             "ignorePantry": "true"  # Ignore typical pantry items
@@ -53,7 +53,7 @@ class RecipeFinder:
     def find_recipes_by_category(self, category):
         endpoint = "recipes/complexSearch"
         common_params = {
-            "number": 10,
+            "number": 3,
             "apiKey": self.api.api_key,
             "sort": "random",  # to show different results each time
             "ignorePantry": "true"  # Ignore typical pantry items
@@ -75,7 +75,7 @@ class RecipeFinder:
     def find_random_recipes(self):
         endpoint = "recipes/random"
         params = {
-            "number": 10,
+            "number": 3,
             "apiKey": self.api.api_key  # Uses the API key from the API instance
         }
         response = self.api.make_request(endpoint, params=params)

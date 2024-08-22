@@ -9,12 +9,12 @@ class TestRecipeDisplay(unittest.TestCase):
 
     def setUp(self):
         self.get_mock = Mock()  # Mocking the get object that would normally fetch recipe instructions
-        self.recipe_display = RecipeDisplay(get=self.get_mock)
+        self.recipe_display = RecipeDisplay(get_recipe=self.get_mock)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_display_recipes_with_ingredients(self, mock_stdout):
         # Mocking the response of find_recipe_instructions method
-        self.get_mock.find_recipe_instructions.return_value = {
+        self.get_mock.find_recipe_details.return_value = {
             'extendedIngredients': [{'original': '1 Tomato'}, {'original': '2 Basil leaves'}],
             'analyzedInstructions': [
                 {'steps': [{'number': 1, 'step': 'Chop tomatoes.'}, {'number': 2, 'step': 'Mix with basil.'}]}]
@@ -46,7 +46,7 @@ class TestRecipeDisplay(unittest.TestCase):
     @patch('sys.stdout', new_callable=StringIO)
     def test_display_recipes_without_ingredients(self, mock_stdout):
         # Mocking the response of find_recipe_instructions method
-        self.get_mock.find_recipe_instructions.return_value = {
+        self.get_mock.find_recipe_details.return_value = {
             'extendedIngredients': [],
             'analyzedInstructions': []
         }
