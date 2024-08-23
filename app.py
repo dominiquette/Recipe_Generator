@@ -47,7 +47,7 @@ class RecipeFinder:
         # Define the parameters for the API request
         params = {
             "ingredients": ingredients,
-            "number": 3,  # Number of recipes to return
+            "number": 5,  # Number of recipes to return
             "ranking": 2,  # Minimises missing ingredients
             "apiKey": self.api.api_key,  # Uses the stored API key for authentication
             "ignorePantry": "true"  # Ignore common pantry items
@@ -71,7 +71,7 @@ class RecipeFinder:
         endpoint = "recipes/complexSearch"
         # Define common parameters for the API request
         common_params = {
-            "number": 3,  # Number of recipes to return
+            "number": 5,  # Number of recipes to return
             "apiKey": self.api.api_key,  # Uses the stored API key for authentication
             "sort": "random",  # Shows different results each time
             "ignorePantry": "true"  # Ignore common pantry items
@@ -102,7 +102,7 @@ class RecipeFinder:
         endpoint = "recipes/random"
         # Define the parameters for the API request
         params = {
-            "number": 3,  # Number of recipes to return
+            "number": 5,  # Number of recipes to return
             "apiKey": self.api.api_key  # Uses the stored API key for authentication
         }
 

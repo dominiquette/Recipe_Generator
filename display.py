@@ -39,16 +39,23 @@ class MenuDisplay:
             '8': 'dessert'
         }
 
+
+    # @log_function_call
+    # @handle_errors
+    # def display_menu(self, menu_items, title):
+    #     # If no title is provided, leave it empty
+    #     title = ""
+    #     if title is None:
+    #         title = ""
+
+
     # Method to display a menu with a formatted title and a list of menu items
     # decorated with logging and error handling
     @log_function_call
     @handle_errors
     def display_menu(self, menu_items, title):
-
-        title = ""  # If no title is provided, leave it empty
         if title is None:
             title = ""
-
         # Define the width of the box, including borders
         width = 44
 
@@ -63,9 +70,8 @@ class MenuDisplay:
         for item in menu_items:
             print(f"\t║ {item.ljust(width - 4)} ║")
 
-        # Create the bottom border of the menu
+        # Create the bottom border
         print("\t╚" + "═" * (width - 2) + "╝")
-
 
 # Recipe class handles getting the list of ingredients and displaying it
 # Interacts with the RecipeFinder to get the recipes from the API

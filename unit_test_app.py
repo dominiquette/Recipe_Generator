@@ -79,7 +79,7 @@ class TestRecipeFinder(unittest.TestCase):
             "recipes/findByIngredients",
             params={
                 "ingredients": "tomato, cheese",
-                "number": 3,
+                "number": 5,
                 "ranking": 2,
                 "apiKey": "test_api_key",
                 "ignorePantry": "true"
@@ -100,7 +100,7 @@ class TestRecipeFinder(unittest.TestCase):
             "recipes/findByIngredients",
             params={
                 "ingredients": "tomato, cheese",
-                "number": 3,
+                "number": 5,
                 "ranking": 2,
                 "apiKey": "test_api_key",
                 "ignorePantry": "true"
@@ -120,7 +120,7 @@ class TestRecipeFinder(unittest.TestCase):
         mock_make_request.assert_called_once_with(
             "recipes/complexSearch",
             params={
-                "number": 3,
+                "number": 5,
                 "apiKey": "test_api_key",
                 "sort": "random",
                 "ignorePantry": "true",
@@ -142,7 +142,7 @@ class TestRecipeFinder(unittest.TestCase):
         mock_make_request.assert_called_once_with(
             "recipes/complexSearch",
             params={
-                "number": 3,
+                "number": 5,
                 "apiKey": "test_api_key",
                 "sort": "random",
                 "ignorePantry": "true",
@@ -199,7 +199,7 @@ class TestRecipeFinder(unittest.TestCase):
         mock_make_request.assert_called_once_with(
             "recipes/random",
             params={
-                "number": 10,
+                "number": 5,
                 "apiKey": "test_api_key"
             }
         )
@@ -221,7 +221,7 @@ class TestRecipeFinder(unittest.TestCase):
         mock_make_request.assert_called_once_with(
             "recipes/random",
             params={
-                "number": 10,
+                "number": 5,
                 "apiKey": "test_api_key"
             }
         )
