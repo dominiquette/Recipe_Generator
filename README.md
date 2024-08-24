@@ -1,104 +1,203 @@
-# CFG-Group-Project-5
-## First Code
-04-08 We create the first shared code from Dom's Code
-## a lot of code later hah
-10-08 comments from anto's work, explaining and a general suggestion
-+ I had to create a new account. I suggested not showing 10 recipes every time we try and reduce them to 2 - we could 
-decide when everything is working the right number to the users, but for us to try I think this is okay,
-what do you think? I change it in this version
-+ First I try to compare the codes and the classes but I was getting nowhere the classes seems right
-So, I try the main code before the classes and Dominique Code before the classes: 
-both of them didn't show the ingredients 
-Thus, I confirm it wasn't a problem of classes it was on the original code
-Gladly Dominique fixed that code on api-links So I compared Dominique's code with the new main code (Eve), 
-after a while trying different parts I realized that the function display_recipes was different. 
-I copy the new Dominique's display_recipes function from api-links and adapted to Eve code with classes and it work!
-+ Some small thing: the welcome message is after the question about the name. I voted to remove that part
-I've only added it to add error handling but we would have other parts to add this.
-+ I try the code without the function get_headers and it works, so I erased it
+# Recipe Generator Console App 🍲
 
-## Adding deque
+🍴 Welcome to the Recipe Generator Console App! 🍽️
 
-I modified main and display files
+This Python-based application is designed to simplify meal planning by allowing users to search for recipes based on the ingredients they have on hand. Whether you're looking to utilize what’s in your pantry or discover exciting new dishes, this tool offers a seamless way to find and view recipes tailored to your needs.
 
-+ Display: I only edit adding a new category: "[4] View your Recipes names so far", please change the writing if you want
+The application harnesses the power of the Spoonacular API to fetch a diverse range of recipes. Additionally, it features functionality to save your favorite recipes to an Excel file, named [saved_recipes.xlsx](saved_recipes.xlsx), for easy reference and future use.
 
-+ Main - I added:
+This guide will walk you through the setup process, from configuring your environment and API key to installing necessary packages and running the application. You will also find detailed information on the application's key features and functionalities.
 
-from collections import deque at first
+Discover a range of delicious recipes effortlessly and conveniently! 🍲
 
-Only change the def run function:
-    + I added a line to create a list using deque: total_titles = deque()
-    + In each choice (1,2,3): 1. I added the titles of the recipes to the list 2. I leave the print mssg in case you  
-want to try it. 3. I added in two different ways to decide which one is the best (like dictionary or with a msg)
-    + I created a new category in the main menu with the code to show 
 
-+ When we decided how we want it I could improve the way that the user see the results I don't know if we could do it   
-with decorators or adding a display_recipes_names function in the display file
+## Features 🌟
 
-## Adjust the parameters based on the selected category
-
-12/08
-fixing the  def find_recipes_by_category(self, category) adding the if statements on 
-def fetch_recipes_by_category(category) on api-links branch
-
-18/08
-
-Errors:
-1) I found that we set as param "type": category
-In category include things that the api has in other params, for ex. fish is not
-2) The if statements categories didn't match with the category mapping in display
-
-Changes:
-
-+ display.py file
-As we agreed in the meeting I changed the class MenuDisplay
-The category_menu_items is change and accordingly the category_mapping to translate user input
-+ app.py file
-I created the abstract class CategoryParams and all the inherit classes according to each option.
-To do so, I used the abc library
-I changed  the find_recipe_instructions to use the abstract class
-Also I edited the common params to erase type, add random sort and ignore pantry
-## Unit testing first draft
-13/08
-+ General commments:
-I used all I have to do it. sessions, code from the sessions, google, IA  
-To summarize I used the file test_unit_test_example from Sophia's lesson about unit test  
-However, we didn't cover in class how to unit test with classes So you we'll see comments about:
-    + setUp: is like our class _init_ not the same but just to give you an idea
-    + I tried to explain assert_called_with and patch inside the unit_test_app
-    + useful links: 
-https://docs.python.org/es/3.10/library/unittest.mock.html
-https://docs.python.org/3/library/unittest.mock.html#patch
-https://www.geeksforgeeks.org/python-unittest-assertin-function/
-
-Furthermore, I think we need to ask how much is expected from us, because there are a million things to test.  
-I don't know if it is necessary a unit test function for each function or only the app.py functions
-I created to files regarding some functions in the app file and display file - 
-We need to decide if it is better to divide them by classes depending on how many lines of code we will have.
-
-+ unit_test_app: One function working and ideas
-    + class TestSpoonacularAPI:
-I wanted to test this class to check if the json response is a dict,
-but I don't know how to do it without giving params and endpoint. 
-I commented the code but I leave it first in case someone know how to do it
-    + the function test_random_recipes_number:
-we only test what happen test what happen if for some reason the response exceeded the params number: 2
-I hope we could use the structure to test more things but I don't know what else test from this function
-  
-+ unit_test_display: This file only have ideas, I wish I have more time
-    + I did a test that one only compares the input from the get_user_ingredients with some expected,
-I don't think we can add this is not testing the function, only the input
-That's why I wanted to test the ValueError
-    +  I wanted to add something related to this ValueError, but I can't.
-Also, I couldn't find a way for the app to give me this error. 
-Hafsa I don't know what I'm doing wrong or maybe we need a redo
-It jumps to a ValueError("API response is empty or invalid.") 
-Here's an example 
-![image](https://github.com/user-attachments/assets/6ddb5d2c-e2d5-40b1-bcdc-a0de09d0b000)
-
-    + Last, I want to add something related to assertIn to check if the ingredient was in the app response to combine
-display and app test, but it was too hard for me
+- **Search Recipes by Ingredients**: Enter a list of ingredients, and the app will find recipes that include those ingredients.
+- **Search Recipes by Categories**: View recipes categorised by different themes.
+ - **Get random recipes**: The app will generate random recipes for you.
+- **View Recipe Details**: For each recipe, you can view the title, ingredients, and preparation instructions.
+- **Save Recipes**: Display and save selected recipes to an Excel file [saved_recipes.xlsx](saved_recipes.xlsx) for later reference.
 
 
 
+## Installation ⚙️
+
+Clone the repository or download the files into one folder. 📂
+
+### Prerequisites
+
+Before running the API, ensure you have the following installed on your system:
+- Python 3.8 or higher  🐍
+- pip (Python package installer) 📦
+
+
+### Install Required Packages
+
+Before running the application, ensure you have all the required packages installed. You can install them using `pip` with the `requirements.txt` file provided.
+
+To install the required packages, open your terminal and run the following commands:
+
+```bash
+pip install -r requirements.txt
+```
+
+
+This will install the following packages:
+
+- **requests**: For making HTTP requests to the Spoonacular API. 
+
+- **XlsxWriter**: For writing data to the [saved_recipes.xlsx](saved_recipes.xlsx) file.
+
+Alternatively, you can individually install the packages by running:
+
+```bash
+pip install requests
+```
+```bash
+pip install XlsxWriter
+```
+
+
+## Set Up API Key 🔑
+
+You need to obtain an API key from **Spoonacular** to use the Recipe Finder Application. 
+
+Sign up at [spoonacular.com/food-api](https://spoonacular.com/food-api/console#Dashboard) to get your API key.
+
+Once you have the API key, open the **[config.py](config.py)** file and replace **API_KEY** with your actual API key:
+
+
+`API_KEY = "your_spoonacular_api_key"`
+
+Replace "**your_spoonacular_api_key**" with your actual API key.
+ 
+
+## Run the Application 🚀
+
+1. Open and run the [main.py](main.py) file.
+2. You will be prompted to enter your name for a personalised welcome message.
+3. After entering your name, you will be taken to the main menu:
+
+   <img width="379" alt="Screenshot of the main menu" src="https://github.com/user-attachments/assets/80e3108e-18b1-4391-a64f-8c7081e65dc9">
+
+4. From the main menu, you can:
+   - **Get recipes based on ingredients**: Enter a list of ingredients to find matching recipes.
+   - **Get random recipes**: Receive a selection of random recipes.
+   - **View recipe categories**: Browse recipes by different categories.
+   - **View your saved recipes**: Access recipes you have previously saved.
+   - **Export saved recipes to Excel**: Save your favorite recipes to an Excel file.
+   - **Exit**: Close the application.
+
+
+## Saving Recipes 💾
+
+After retrieving recipes, you can choose to save any of them by selecting the corresponding option.
+
+<img width="605" alt="Screenshot of saving recipe option" src="https://github.com/user-attachments/assets/238765e4-3301-470c-b548-ebfccdfa93a1">
+
+You can then view your saved recipes.
+
+<img width="456" alt="Screenshot of saved recipes list" src="https://github.com/user-attachments/assets/cc6ced47-ec32-4d50-a940-27f82989a3c4">
+
+You can then export your recipes to an Excel file to print or save on your device.
+
+<img width="463" alt="Screenshot of export options" src="https://github.com/user-attachments/assets/cc5ed9fc-59b5-4dfa-9bd5-6941294f20e5">
+
+The recipes will be saved to an Excel file named [saved_recipes.xlsx](saved_recipes.xlsx) in the same directory.
+
+## Excel File  📊
+
+The [saved_recipes.xlsx](saved_recipes.xlsx) file is automatically generated when you save recipes. It contains the recipe titles, ingredients, and instructions in a structured format.
+
+<img width="373" alt="Screenshot of Excel file content" src="https://github.com/user-attachments/assets/488c1900-f288-412a-8dfc-65e2292224d4">
+
+
+## API Endpoints 🔗
+
+Although the Recipe Finder Application primarily runs as a command-line interface, the following endpoints are used internally:
+
+#### Find Recipes by Ingredients
+
+```http
+    GET /recipes/findByIngredients
+
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `ingredients`    | `string` | Comma-separated list of ingredients. |
+| `number`    | `int` | Number of recipes to return. |
+| `ranking`    | `int` | Ranking of recipes by the number of ingredients matched. |
+| `ignorePantry`    | `string` | Whether to ignore common pantry items.|
+
+
+
+
+#### Find Recipes by Category
+
+```http
+    GET /recipes/complexSearch
+
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `number`    | `int` | Number of recipes to return.  |
+| `apiKey`    | `string` | Your Spoonacular API key. |
+| `sort`    | `string` | Sorting method. Default is "random". |
+| `ignorePantry`    | `string` | Whether to ignore common pantry items.  |
+| `type`    | `string` | Type of recipe (e.g., "snack", "dessert").  |
+
+
+
+
+#### Get Random Recipe
+
+```http
+    GET /recipes/random
+
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `number`    | `int` | Number of random recipes to retrieve.|
+| `apiKey`    | `string` | Your Spoonacular API key |
+
+
+
+#### Find Recipe Details
+
+```http
+    GET /recipes/{recipe_id}/information
+
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `recipe_id`    | `string` | The ID of the recipe to retrieve details for.|
+| `apiKey`    | `string` | Your Spoonacular API key |
+
+
+
+## Test 🧪
+
+To verify that the Recipe Generator is working correctly, you can run the provided unit tests:
+
+
+
+```bash
+python -m unittest unit_test_app.py
+python -m unittest unit_test_display.py
+python -m unittest unit_test_main.py
+
+```
+
+## Credits 🏅
+
+This project was developed by:
+
+- [Anto](https://github.com/chinatortora)
+- [Eve](https://github.com/evelinakald)
+- [Hafsa](https://github.com/hafsaarale)
+- [Dominique](https://github.com/dominiquette)
