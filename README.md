@@ -21,7 +21,7 @@ Discover a range of delicious recipes effortlessly and conveniently! 🍲
  - **Get random recipes**: The app will generate random recipes for you.
 - **View Recipe Details**: For each recipe, you can view the title, ingredients, and preparation instructions.
 - **Save Recipes**: Display and save selected recipes to an Excel file [saved_recipes.xlsx](saved_recipes.xlsx) for later reference.
->>>>>>> f5f9f5a36f216fc3fdd2ef0e51f356cc12813605
+
 
 
 
