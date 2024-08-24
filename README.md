@@ -180,18 +180,52 @@ Although the Recipe Finder Application primarily runs as a command-line interfac
 
 
 
-## Test 🧪
+# Unit Test 🧪
 
-To verify that the Recipe Generator is working correctly, you can run the provided unit tests:
+We conducted tests on the core classes of the application to ensure they meet the functional requirements. Additionally, we created another file to test the display-related classes.
 
+## Unit test app file
 
+In the unit test app file, we use `unittest` for the testing framework and `unittest.mock` for mocking objects during tests. The `mock` module is utilized to simulate objects and modify their behavior, while `requests` is imported for HTTP requests, though it's primarily used for mocking.
 
-```bash
-python -m unittest unit_test_app.py
-python -m unittest unit_test_display.py
-python -m unittest unit_test_main.py
+**Code explanation:**
 
-```
+We created two classes to test the corresponding class methods on the app file. Using mock and assert to make the testing classes work.
+We added setUp to initialise the SpoonacularAPI in the TestSpoonacularAPI class and the SpoonacularAPI and RecipeFinder instances in the TestRecipeFinder class.
+
+- **TestSpoonacularAPI**
+  - `test_make_request_success`: Tests if the `make_request` method correctly handles a successful API call.
+  - `test_make_request_http_error`: Tests how the `make_request` method manages HTTP error responses.
+  - `test_make_request_request_exception`: Tests how the `make_request` method handles general request exceptions, such as connection errors.
+
+- **TestRecipeFinder**
+  - `test_find_recipes_by_ingredients_success`: Tests if the `find_recipes_by_ingredients` method successfully retrieves recipes when given valid ingredients.
+  - `test_find_recipes_by_ingredients_empty_response`: Tests how the `find_recipes_by_ingredients` method handles an empty response.
+  - `test_find_recipes_by_category_success`: Tests if `find_recipes_by_category` correctly retrieves recipes for a given category.
+  - `test_find_recipes_by_category_empty_response`: Tests the method’s response to an empty API result.
+  - `test_find_recipe_instructions_success`: Tests if `find_recipe_details` retrieves recipe instructions successfully.
+  - `test_find_recipe_instructions_empty_response`: Tests how `find_recipe_details` handles an empty response.
+  - `test_find_random_recipes_success`: Tests if `find_random_recipes` successfully retrieves random recipes.
+  - `test_find_random_recipes_one_response`: Tests if the method handles a response with a single recipe correctly.
+
+### Unit Test Display File
+
+In the unit test display file, we use `unittest` and `unittest.mock`, including `mock` and `patch`, for simulating objects and modifying their behavior. Additionally, `StringIO` from the `io` module is used to capture printed output for assertions.
+
+**Code Explanation:**
+
+We created two classes to test the corresponding class methods on the app file. Each class has its setUp explained below:
+
+- **TestRecipeDisplay**
+  - `setUp`: Initializes a `Mock` object to simulate fetching recipe details and creates an instance of `RecipeDisplay` with this mock.
+  - `test_display_recipes_with_ingredients`: Tests the `display_recipes` method when recipe details include both used and missed ingredients, as well as instructions.
+  - `test_display_recipes_without_ingredients`: Tests the `display_recipes` method when recipe details are empty.
+  - `test_display_saved_recipes`: Tests the `display_saved_recipes` method with a dictionary of saved recipes categorized by type.
+  - `test_display_saved_recipes_empty`: Tests the `display_saved_recipes` method with an empty dictionary of saved recipes.
+
+- **TestMenuDisplay**
+  - `setUp`: Initializes an instance of `MenuDisplay`.
+  - `test_display_menu`: Tests the `display_menu` method to ensure it correctly formats and displays the menu items with a title.
 
 ## Credits 🏅
 
