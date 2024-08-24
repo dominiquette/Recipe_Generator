@@ -23,7 +23,7 @@ Discover a range of delicious recipes effortlessly and conveniently! 🍲
 
 ## Installation ⚙️
 
-Clone the repository or download the files into one folder. 📂
+Clone the repository or download the files in the correct folders. 📂
 
 ### Prerequisites
 
