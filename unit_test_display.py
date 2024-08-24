@@ -2,7 +2,6 @@ import unittest
 from unittest.mock import patch, Mock
 from io import StringIO
 from display import RecipeDisplay, MenuDisplay
-from user_input import UserInput
 
 
 class TestRecipeDisplay(unittest.TestCase):
