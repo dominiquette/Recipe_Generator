@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-=======
 # Recipe Generator Console App 🍲
 
 🍴 Welcome to the Recipe Generator Console App! 🍽️
