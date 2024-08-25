@@ -6,42 +6,56 @@ from collections import deque, defaultdict
 from .decorators import log_function_call, handle_errors
 
 
-# SaveRecipe class handles saving recipes under different categories
 class SaveRecipe:
     def __init__(self):
-        # Initialises an empty dictionary where the value will be a list of recipe names and the key is the category
+        """
+        Initialize the SaveRecipe instance with an empty dictionary.
+        The dictionary's keys are categories, and the values are deques
+        of recipe names under each category.
+        """
         self.saved_recipes = defaultdict(deque)
 
-    # Method to save selected recipes, decorated with logging and error handling
     @log_function_call
     @handle_errors
     def save_recipes(self, recipe_names, category):
-        # Loops through the recipe_names list, starting at index 1 so output does not start at 0
-        # and prints the index next to the current title in the loop
+        """
+        Save selected recipes to a specified category.
+
+        Args:
+            recipe_names (list): A list of recipe names.
+            category (str): The category under which the recipes will be saved.
+
+        This method displays the list of recipes with index numbers,
+        prompts the user to select recipes by entering their indices,
+        and then saves the selected recipes under the specified category.
+        """
+        # Display recipe names with indices
         for index, title in enumerate(recipe_names, start=1):
             print(f"[{index}] {title}")
 
-        # Prompts the user to enter which recipes they want to save
-        # Removes whitespace and splits the string to a list
+        # Prompt user for recipe selection
         selected_recipes = input(
             "\nEnter the numbers of the recipes you want to save, separated by commas: ").strip().split(',')
 
-        # Converts the strings to integers and strips away whitespace
+        # Convert user input to a list of integers, stripping any extra whitespace
         selected_recipes = [int(recipe.strip()) for recipe in selected_recipes]
 
-        # Loops through the list of integers, representing the recipes
-        # and checks that the current recipe is within valid range
+        # Validate and save selected recipes
         for recipe in selected_recipes:
             if 1 <= recipe <= len(recipe_names):
-                # If valid, the recipe name will be appended to the saved_recipes dictionary under specified category
-                # We set the index back one as to adjust to Pythons zero-based index
+                # Append selected recipe to the appropriate category
                 self.saved_recipes[category].append(recipe_names[recipe - 1])
-        # Prints a success message when recipe is saved
+
         print("\nRecipes saved successfully!")
 
-    # Method to retrieves the saved recipes dictionary, decorated with logging and error handling
     @log_function_call
     @handle_errors
     def get_saved_recipes(self):
-        # Returns the saved_recipes dictionary as a regular dict (not defaultdict)
+        """
+        Retrieve the dictionary of saved recipes.
+
+        Returns:
+            dict: A dictionary where keys are recipe categories and values
+                  are lists of saved recipe names under each category.
+        """
         return dict(self.saved_recipes)

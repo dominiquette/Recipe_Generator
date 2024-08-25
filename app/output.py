@@ -1,27 +1,40 @@
 # ===== Importing Libraries ===========
-# Used for creating Excel files
+# Importing xlsxwriter for creating Excel files
 import xlsxwriter
+
 # ===== Importing methods from files ===========
 from .decorators import log_function_call, handle_errors
 
 
-# RecipeExporter class handles exporting recipes to an Excel file
 class RecipeExporter:
-    # Initialises the class with recipe details and saved recipes
     def __init__(self, recipe_details, saved_recipes):
+        """
+        Initialize the RecipeExporter with recipe details and saved recipes.
+
+        Args:
+            recipe_details (object): An instance of a class responsible for retrieving recipe details.
+            saved_recipes (object): An instance of a class responsible for storing and retrieving saved recipes.
+        """
         self.recipe_details = recipe_details
         self.saved_recipes = saved_recipes
 
-    # Method to export recipes to an Excel file, decorated with logging and error handling
     @log_function_call
     @handle_errors
     def export_to_excel(self, filename):
-        # Create a new Excel workbook with the given filename
+        """
+        Export the saved recipes to an Excel file.
+
+        Args:
+            filename (str): The name of the file to which the recipes will be exported.
+
+        This method creates an Excel workbook, writes recipe details including ingredients and instructions,
+        and saves the workbook to the specified filename.
+        """
+        # Create a new Excel workbook and add a worksheet
         workbook = xlsxwriter.Workbook(filename)
-        # Add a worksheet named 'Recipes' to the workbook
         worksheet = workbook.add_worksheet('Recipes')
 
-        # Define cell formatting styles for title, headers, and text
+        # Define cell formatting styles.
         title_format = workbook.add_format({
             'bold': True,  # Bold text
             'font_size': 18,  # Large font size for titles
