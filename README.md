@@ -71,7 +71,7 @@ Once you have the API key, open the **[config.py](config.py)** file and replace 
 
 `api_key = "your-api-key-here"`
 
-Replace "**your_spoonacular_api_key**" with your actual API key.
+Replace "**your-api-key-here**" with your actual API key.
  
 
 ## Run the Application 🚀
