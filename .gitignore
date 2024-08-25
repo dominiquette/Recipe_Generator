@@ -1,13 +1,15 @@
-
-.idea/CFG-Group-Project-5.iml
-.idea/CFG-Group-Project-5.iml
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
-.idea/CFG-Group-Project-5.iml
-*.xml
-.idea/.name
+# macOS system files
 .DS_Store
+
+# Python cache files
 __pycache__/
+
+# JetBrains IDE files
 .idea/
+
+# IntelliJ IDEA project files
+*.iml
+*.xml
+
+# Other
+*.log
