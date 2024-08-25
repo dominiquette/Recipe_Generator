@@ -1,5 +1,5 @@
 # ===== Importing methods from files ===========
-from decorators import log_function_call, handle_errors
+from .decorators import log_function_call, handle_errors
 
 
 # UserInput class handles getting the user's input

@@ -12,7 +12,7 @@ class TestSpoonacularAPI(unittest.TestCase):
         self.api = SpoonacularAPI(base_url="https://api.spoonacular.com", api_key="test_api_key")
 
     # Test for successful API request
-    @patch('app.requests.get')
+    @patch('requests.get')
     def test_make_request_success(self, mock_get):
         # Mock the response object to simulate a successful request with a JSON dictionary
         mock_response = Mock()
@@ -32,7 +32,7 @@ class TestSpoonacularAPI(unittest.TestCase):
         )
 
     # Test for handling HTTP error response
-    @patch('app.requests.get')
+    @patch('requests.get')
     def test_make_request_http_error(self, mock_get):
         # Mock the response object to simulate an HTTP error
         mock_response = Mock()
@@ -47,7 +47,7 @@ class TestSpoonacularAPI(unittest.TestCase):
         self.assertIsNone(result)
 
     # Test for handling general request exceptions such as connection errors
-    @patch('app.requests.get')
+    @patch('requests.get')
     def test_make_request_request_exception(self, mock_get):
         # Mock the requests.get to raise a RequestException
         mock_get.side_effect = requests.exceptions.RequestException("Connection error")
