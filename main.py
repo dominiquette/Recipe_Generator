@@ -1,11 +1,11 @@
 # ===== Importing methods and classes from files ===========
-from user_input import UserInput
-from display import MenuDisplay, RecipeDisplay
-from recipe_saver import SaveRecipe
-from app import RecipeFinder, SpoonacularAPI, RecipeDetails
-from config import api_key
-from decorators import log_function_call, handle_errors
-from output import RecipeExporter
+from app.user_input import UserInput
+from app.display import MenuDisplay, RecipeDisplay
+from app.recipe_saver import SaveRecipe
+from app.app import RecipeFinder, SpoonacularAPI, RecipeDetails
+from app.config import api_key
+from app.decorators import log_function_call, handle_errors
+from app.output import RecipeExporter
 
 # App class is the main application class, handles running the application
 class App:

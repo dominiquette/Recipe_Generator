@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch, Mock
 import requests
 
-from app import SpoonacularAPI, RecipeFinder
+from app.app import SpoonacularAPI, RecipeFinder
 
 
 # Test class for the SpoonacularAPI class

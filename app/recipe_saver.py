@@ -3,7 +3,7 @@
 from collections import deque, defaultdict
 
 # ===== Importing methods from files ===========
-from decorators import log_function_call, handle_errors
+from .decorators import log_function_call, handle_errors
 
 
 # SaveRecipe class handles saving recipes under different categories

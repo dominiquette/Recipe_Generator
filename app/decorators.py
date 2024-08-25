@@ -1,7 +1,7 @@
 # ===== Importing Libraries ===========
 import requests
 from functools import wraps  # `wraps` is used to preserve the original function's metadata when decorating it
-from config import LOGGING_ENABLED  # Import a configuration setting to enable or disable logging
+from .config import LOGGING_ENABLED  # Import a configuration setting to enable or disable logging
 
 
 # Decorator for logging function calls

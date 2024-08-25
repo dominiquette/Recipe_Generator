@@ -5,7 +5,7 @@ import requests
 from abc import abstractmethod
 
 # ===== Importing data from files ===========
-from decorators import log_function_call, handle_errors
+from .decorators import log_function_call, handle_errors
 
 
 # ===== Establish API connection ===========

@@ -2,7 +2,7 @@
 # Used for creating Excel files
 import xlsxwriter
 # ===== Importing methods from files ===========
-from decorators import log_function_call, handle_errors
+from .decorators import log_function_call, handle_errors
 
 
 # RecipeExporter class handles exporting recipes to an Excel file

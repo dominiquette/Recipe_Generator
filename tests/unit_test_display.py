@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, Mock
 from io import StringIO
-from display import RecipeDisplay, MenuDisplay
+from app.display import RecipeDisplay, MenuDisplay
 
 # Test display.py file
 
