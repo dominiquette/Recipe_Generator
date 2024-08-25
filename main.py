@@ -1,4 +1,5 @@
 # ===== Importing methods and classes from files ===========
+# Import necessary classes and functions from various modules for the application
 from app.user_input import UserInput
 from app.display import MenuDisplay, RecipeDisplay
 from app.recipe_saver import SaveRecipe
@@ -7,65 +8,74 @@ from app.config import api_key
 from app.decorators import log_function_call, handle_errors
 from app.output import RecipeExporter
 
-# App class is the main application class, handles running the application
+
+# The App class serves as the entry point for the Recipe Generator application.
+# It manages the application's flow, user interaction, and integrates with the API for recipe retrieval.
 class App:
     def __init__(self):
-        # Creates an instance of the user class
-        # The get_name method is called here as it is instantiated and called in the user class init method
+        """Initializes the main components of the application."""
+        # Instantiate the UserInput class to handle user interactions
         self.user = UserInput()
-        # Initialise a welcome message as a string
+
+        # Welcome message customised for the user, displayed at the start of the application
         self.welcome_message = f"""
         ·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚‧₊⁺⁺₊‧˚·͙ ‧₊⁺⁺
         🧄🍲🍎 Welcome {self.user.name}, to Group 5 Recipe Generator 🍉🍰🥕 
         ·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚·͙̩̩̥˚‧₊⁺⁺₊‧˚ ‧₊⁺⁺₊‧˚·͙ ‧₊⁺⁺
         """
-        # Creates an instance of the Menu class
+
+        # Instantiate the MenuDisplay class to manage menu-related displays
         self.menu = MenuDisplay()
-        # Creates a local instance of the SpoonacularAPI class
+
+        # Create an instance of SpoonacularAPI with the provided base URL and API key
         api = SpoonacularAPI("https://api.spoonacular.com", api_key)
-        # Creates an instance of the RecipeFinder class, passing the api instance
+
+        # Instantiate RecipeFinder to handle recipe search functionality
         self.get_recipe = RecipeFinder(api)
-        # Creates an instance of the Recipe class, passing the get_recipe instance
+
+        # Instantiate RecipeDisplay to manage the display of found recipes
         self.show_recipe = RecipeDisplay(self.get_recipe)
-        # Creates an instance of the SaveRecipe class
+
+        # Instantiate SaveRecipe to manage the saving of selected recipes
         self.saved_recipes = SaveRecipe()
-        # Creates an instance of RecipeDetails class, passing the api instance and recipe_finder
+
+        # Instantiate RecipeDetails to manage detailed recipe information retrieval
         self.recipe_details = RecipeDetails(api, self.get_recipe)
-        # Creates an instance of RecipeExporter class, passing recipe_details and saved_recipes instances
+
+        # Instantiate RecipeExporter to handle exporting of saved recipes to an Excel file
         self.recipe_exporter = RecipeExporter(self.recipe_details, self.saved_recipes)
 
-    # Method that runs the application, decorated with logging and error handling
+    # The run method is the core loop of the application.
+    # It presents the user with options, processes their choices, and interacts with the various components of the app.
     @log_function_call
     @handle_errors
     def run(self):
+        """Runs the main application loop."""
         print(self.welcome_message)
-        # Starts an infinite loop for the main menu that will run until you explicitly exit the program
+
+        # Infinite loop to keep the application running until the user decides to exit
         while True:
-            # Displays the main menu options to the user
+            # Display the main menu and prompt the user for their choice
             self.menu.display_menu(self.menu.main_menu_items, "Main Menu")
-            # Prompts the user for their menu choice and removes any whitespace
             choice = self.user.get_choice("\nWhat would you like to do? ").strip()
 
             # Option 1: Find recipes by ingredients
             if choice == '1':
-                # Gets a list of ingredients from the user
+                # Get a list of ingredients from the user and find matching recipes
                 ingredients = self.user.get_user_ingredients()
-                # Find recipes using the provided ingredients by calling API connected methods
                 recipes = self.get_recipe.find_recipes_by_ingredients(ingredients)
 
-                # If the API call fails, return to main menu
+                # If no recipes are found, return to the main menu
                 if recipes is None:
                     print("\nReturning to main menu...")
                     continue
 
-                # Display the recipes found using the ingredients
+                # Display found recipes and ask if the user wants to save them
                 self.show_recipe.display_recipes(recipes, by_ingredients=True)
-                # Get the recipe titles from the list of recipes
                 ingredients_titles = [recipe['title'] for recipe in recipes]
 
-                # Asks the user if they want to save the recipes
                 if self.user.get_save_recipe_choice():
-                    # Saves the recipe name under the category 'Ingredients'
+                    # Save the selected recipes under the 'Ingredients' category
                     self.saved_recipes.save_recipes(ingredients_titles, 'Ingredients')
 
             # Option 2: Find random recipes
@@ -73,44 +83,37 @@ class App:
                 # Finds random recipes using the API
                 recipes = self.get_recipe.find_random_recipes()
 
-                # If the API call fails, return to main menu
+                # If no recipes are found, return to the main menu
                 if recipes is None:
                     print("\nReturning to main menu...")
                     continue
 
-                # Display the randomly found recipes
+                # Display the random recipes and ask if the user wants to save them
                 self.show_recipe.display_recipes(recipes, by_ingredients=False)
-                # Get the recipe titles from the random recipes
                 random_titles = [recipe['title'] for recipe in recipes]
 
-                # Asks the user if they want to save the recipes
                 if self.user.get_save_recipe_choice():
-                    # Saves the random recipe name under the category 'Random'
+                    # Save the random recipes under the 'Random' category
                     self.saved_recipes.save_recipes(random_titles, 'Random')
 
             # Option 3: Find recipes by category
             elif choice == '3':
-                # Starts a loop for category selection
+                # Loop to allow the user to select a category and find recipes accordingly
                 while True:
-                    # Display the category menu options to the user
                     self.menu.display_menu(self.menu.category_menu_items, "Recipe Categories")
-                    # Prompts the user for their category choice and removes any whitespace
                     category_choice = self.user.get_choice("\nPlease select a category: ").strip()
 
-                    # Checks if the user's choice is a valid category
+                    # If a valid category is selected, fetch recipes from that category
                     if category_choice in self.menu.category_mapping:
-                        # Maps the user's choice to a recipe category
                         category = self.menu.category_mapping[category_choice]
-                        # Finds recipes based on the chosen category
                         recipes = self.get_recipe.find_recipes_by_category(category)
 
-                        # If the API call fails, return to main menu
+                        # If no recipes are found, return to the main menu
                         if recipes is None:
                             print("\nReturning to main menu...")
-                            # Exits the category selection loop and goes back to the main menu
                             break
 
-                        # Display the recipes found for the selected category
+                        # Display the recipes found for the selected category and ask if the user wants to save them
                         self.show_recipe.display_recipes(recipes, by_ingredients=False)
                         # Gets the recipe name from the list of category recipes
                         category_titles = [recipe['title'] for recipe in recipes]
@@ -120,7 +123,7 @@ class App:
                             # Save the category recipe name under the category name
                             self.saved_recipes.save_recipes(category_titles, category)
 
-                    # Option to go back to the main menu from category selection
+                    # Option to go back to the main menu
                     elif category_choice == '9':
                         break
 
@@ -130,24 +133,27 @@ class App:
 
             # Option 4: Display saved recipes
             elif choice == '4':
-                # Displays saved recipes
+                # Display recipes that the user has previously saved
                 self.show_recipe.display_saved_recipes(self.saved_recipes.get_saved_recipes())
 
             # Option 5: Exports saved recipes to an Excel file
             elif choice == '5':
+                # Export the saved recipes to 'saved_recipes.xlsx'
                 self.recipe_exporter.export_to_excel('saved_recipes.xlsx')
 
             # Option 6: Exit the program
             elif choice == '6':
+                # Thanks the user and exit the program
                 print("Thank you for using our recipe app, goodbye!")
-                # Terminates the program execution
                 exit()
 
             # Handles invalid menu choices
             else:
                 print("Invalid choice. Please try again.")
 
+
 # ===== Main ===========
+# This block ensures the application runs when executed as a script
 if __name__ == "__main__":
-    # Initialises an instance of the App class and calls the run() method to start the application
+    # Initialize the App class and start the application
     app = App().run()
