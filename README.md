@@ -66,7 +66,7 @@ You need to obtain an API key from **Spoonacular** to use the Recipe Finder Appl
 
 Sign up at [spoonacular.com/food-api](https://spoonacular.com/food-api/console#Dashboard) to get your API key.
 
-Once you have the API key, open the **[config.py](config.py)** file and replace **API_KEY** with your actual API key:
+Once you have the API key, open the **[config.py](config.py)** file and replace **api_key** with your actual API key:
 
 
 `api_key = "your-api-key-here"`
