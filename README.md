@@ -69,7 +69,7 @@ Sign up at [spoonacular.com/food-api](https://spoonacular.com/food-api/console#D
 Once you have the API key, open the **[config.py](config.py)** file and replace **API_KEY** with your actual API key:
 
 
-`API_KEY = "your_spoonacular_api_key"`
+`api_key = "your-api-key-here"`
 
 Replace "**your_spoonacular_api_key**" with your actual API key.
  
