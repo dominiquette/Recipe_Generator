@@ -1,5 +1,5 @@
 # ===== Importing Libraries ===========
-# Used to make HTTP requests to the API
+# Used to make HTTP requests to the Spoonacular API
 import requests
 # Used to create abstract base classes
 from abc import abstractmethod
@@ -12,39 +12,66 @@ from .decorators import log_function_call, handle_errors
 
 # SpoonacularAPI class handles making requests to the API
 class SpoonacularAPI:
+    """
+    Class to handle communication with the Spoonacular API.
+    """
     def __init__(self, base_url, api_key):
-        # Creates an instance of the base URL
+        """
+        Initializes the SpoonacularAPI instance with base URL and API key.
+        """
         self.base_url = base_url
-        # Creates an instance of the API key
         self.api_key = api_key
 
     # Method that handles the requests to the API, decorated with logging and error handling
     @log_function_call
     @handle_errors
     def make_request(self, endpoint, params=None):
-        # Constructs the complete API endpoint URL
+        """
+        Makes a GET request to the API and returns the JSON response.
+
+        Args:
+            endpoint (str): API endpoint to send the request to.
+            params (dict, optional): Query parameters for the request.
+
+        Returns:
+            dict: JSON response from the API.
+
+        Raises:
+            HTTPError: If the API request fails.
+        """
         url = f'{self.base_url}/{endpoint}'
-        # Makes a GET request to the API with the provided URL and parameters
         response = requests.get(url, params=params)
-        # Raises an exception for HTTP errors
         response.raise_for_status()
-        # Return the JSON response
         return response.json()
 
 
 # RecipeFinder class handles getting recipes from the API
 class RecipeFinder:
+    """
+    Class to find recipes from the Spoonacular API.
+    """
     def __init__(self, api):
-        # Creates an instance of the API class to make requests
+        """
+        Initializes the RecipeFinder instance with a SpoonacularAPI object.
+        """
         self.api = api
 
-    # Method that handles making a recipe request by ingredients, decorated with logging and error handling
     @log_function_call
     @handle_errors
     def find_recipes_by_ingredients(self, ingredients):
-        # Define the API endpoint for searching recipes by ingredients
+        """
+        Finds recipes based on a list of ingredients.
+
+        Args:
+            ingredients (str): Comma-separated list of ingredients.
+
+        Returns:
+            list: List of recipes matching the ingredients.
+
+        Raises:
+            ValueError: If the API response is empty or invalid.
+        """
         endpoint = "recipes/findByIngredients"
-        # Define the parameters for the API request
         params = {
             "ingredients": ingredients,
             "number": 5,  # Number of recipes to return
@@ -52,32 +79,33 @@ class RecipeFinder:
             "apiKey": self.api.api_key,  # Uses the stored API key for authentication
             "ignorePantry": "true"  # Ignore common pantry items
         }
-
-        # Make the API request and store the response
-        response = self.api.make_request(endpoint, params=params)
-
-        # ValueError for empty or invalid responses
+        response = self.api.make_request(endpoint, params=params) # Make the API request and store the response
         if not response:
             raise ValueError("API response is empty or invalid.")
-
-        # Return the response from the API
         return response
 
-    # Method that handles making a recipe request by category, decorated with logging and error handling
     @log_function_call
     @handle_errors
     def find_recipes_by_category(self, category):
-        # Define the API endpoint for searching recipes by category
+        """
+        Finds recipes based on a category.
+
+        Args:
+            category (str): Recipe category.
+
+        Returns:
+            list: List of recipes in the specified category.
+
+        Raises:
+            ValueError: If the API response is empty or invalid.
+        """
         endpoint = "recipes/complexSearch"
-        # Define common parameters for the API request
         common_params = {
             "number": 5,  # Number of recipes to return
             "apiKey": self.api.api_key,  # Uses the stored API key for authentication
             "sort": "random",  # Shows different results each time
             "ignorePantry": "true"  # Ignore common pantry items
         }
-
-        # Use CategoryMapping to get category-specific options based on user input
         get_categories = CategoryMapping.get_category(category)
         # If category mapping exists, set parameters accordingly
         if get_categories:
@@ -85,11 +113,7 @@ class RecipeFinder:
         else:
             # If no category-specific options, use the common parameters
             params = common_params
-
-        # Make the API request and store the response
         response = self.api.make_request(endpoint, params=params)
-
-        # ValueError for empty or invalid responses
         if not response:
             raise ValueError("API response is empty or invalid.")
         return response.get("results", [])

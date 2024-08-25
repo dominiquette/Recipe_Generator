@@ -2,6 +2,8 @@
 from .decorators import log_function_call, handle_errors
 
 
+# ===== Menu Display Handling ===========
+
 # Menu class that handles displaying and managing the menu options
 class MenuDisplay:
     def __init__(self):
@@ -39,7 +41,6 @@ class MenuDisplay:
             '8': 'dessert'
         }
 
-
     # @log_function_call
     # @handle_errors
     # def display_menu(self, menu_items, title):
@@ -47,7 +48,6 @@ class MenuDisplay:
     #     title = ""
     #     if title is None:
     #         title = ""
-
 
     # Method to display a menu with a formatted title and a list of menu items
     # decorated with logging and error handling
@@ -72,6 +72,7 @@ class MenuDisplay:
 
         # Create the bottom border
         print("\t╚" + "═" * (width - 2) + "╝")
+
 
 # Recipe class handles getting the list of ingredients and displaying it
 # Interacts with the RecipeFinder to get the recipes from the API

@@ -7,23 +7,21 @@ from .config import LOGGING_ENABLED  # Import a configuration setting to enable 
 # Decorator for logging function calls
 def log_function_call(func):
     """
-        A decorator that logs the function calls and their return values.
+    A decorator that logs the function calls and their return values.
 
-        This decorator is used primarily for debugging purposes. When applied to a function,
-        it will print a message before and after the function is called, showing the function's
-        name and its return value.
+    This decorator is used primarily for debugging purposes. When applied to a function,
+    it will print a message before and after the function is called, showing the function's
+    name and its return value. The logging behavior can be toggled on or off using the
+    `LOGGING_ENABLED` setting in the config module by setting it to True or False. This
+    allows you to enable detailed logging during development and debugging, but disable it
+    during production or presentation to keep the console output clean.
 
-        The logging behavior can be toggled on or off using the `LOGGING_ENABLED` setting in the
-        config module by setting it to True or False. This allows you to enable detailed logging during development and
-        debugging, but disable it during production or presentation to keep the console output clean.
+    Args:
+        func (function): The function to be decorated.
 
-        Args:
-            func (function): The function to be decorated.
-
-        Returns:
-            function: The wrapped function with logging functionality.
-        """
-
+    Returns:
+        function: The wrapped function with logging functionality.
+    """
     @wraps(func)
     def wrapper(*args, **kwargs):
         if LOGGING_ENABLED:
