@@ -41,14 +41,6 @@ class MenuDisplay:
             '8': 'dessert'
         }
 
-    # @log_function_call
-    # @handle_errors
-    # def display_menu(self, menu_items, title):
-    #     # If no title is provided, leave it empty
-    #     title = ""
-    #     if title is None:
-    #         title = ""
-
     # Method to display a menu with a formatted title and a list of menu items
     # decorated with logging and error handling
     @log_function_call
